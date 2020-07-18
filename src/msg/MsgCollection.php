@@ -23,7 +23,7 @@ use IteratorIterator;
  */
 class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
 {
-
+    use MsgVarsOutputTrait;
     use MsgInterchangeabilityTrait;
 
     /**
@@ -121,6 +121,6 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
         foreach ($this->messages as $msg) {
             $msgVars[] = $msg->getMsgVars();
         }
-        return $msgVars;
+        return call_user_func_array('array_merge', $msgVars);
     }
 }

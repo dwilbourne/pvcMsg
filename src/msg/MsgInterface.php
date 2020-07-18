@@ -17,7 +17,7 @@ interface MsgInterface extends MsgRetrievalInterface
      * addMsgVar
      * @param null $var
      */
-    public function addMsgVar($var = null) : void;
+    public function addMsgVar($var) : void;
 
     /**
      * setMsgVars

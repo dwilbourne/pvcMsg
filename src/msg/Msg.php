@@ -7,6 +7,8 @@
 
 namespace pvc\msg;
 
+use Exception;
+
 /**
  * parent class / default implementation for message creation
  *
@@ -18,6 +20,7 @@ namespace pvc\msg;
 
 class Msg implements MsgInterface
 {
+    use MsgVarsOutputTrait;
     use MsgInterchangeabilityTrait;
 
     /**
@@ -36,7 +39,7 @@ class Msg implements MsgInterface
      * @param mixed[] $vars
      * @param string $msgText
      */
-    public function __construct(array $vars = [], string $msgText = '')
+    public function __construct(array $vars, string $msgText)
     {
         $this->setMsgVars($vars);
         $this->setMsgText($msgText);
@@ -46,7 +49,7 @@ class Msg implements MsgInterface
      * @function addMsgVar
      * @param mixed $var
      */
-    public function addMsgVar($var = null) : void
+    public function addMsgVar($var) : void
     {
         if (empty($var)) {
             $var = '{{ null or empty string }}';
@@ -94,17 +97,15 @@ class Msg implements MsgInterface
     }
 
     /**
-     * @function setMsgText.  MsgText should not have any line termination characters in it.  Line termination
-     * is a form of formatting and that behavior should be left to a formatter.
+     * @function setMsgText.
      * @param string $msgText
      */
     public function setMsgText(string $msgText): void
     {
+        if (empty($msgText)) {
+            throw new Exception();
+        }
         $this->msgText = $msgText;
     }
 
-    public function __toString()
-    {
-        return vsprintf($this->getMsgText(), $this->getMsgVars());
-    }
 }

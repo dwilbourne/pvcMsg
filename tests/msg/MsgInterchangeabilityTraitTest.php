@@ -11,7 +11,7 @@ use pvc\msg\ErrorExceptionMsg;
 use pvc\msg\Msg;
 use pvc\msg\UserMsg;
 
-class MsgInterchangeabilityTestTest extends TestCase
+class MsgInterchangeabilityTraitTest extends TestCase
 {
     protected Msg $msg;
 

@@ -53,7 +53,7 @@ class MsgCollectionTest extends TestCase
         $this->msgCollection->addMsg($msg_2);
         self::assertEquals(2, count($this->msgCollection));
 
-        $expectedResult = [[$var_1], [$var_2]];
+        $expectedResult = [$var_1, $var_2];
         self::assertEquals($expectedResult, $this->msgCollection->getMsgVars());
 
         $expectedResult = $text_1 . ' ' . $text_2;
