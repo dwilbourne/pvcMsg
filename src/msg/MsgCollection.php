@@ -155,7 +155,15 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
      */
     public function __toString() : string
     {
-        return $this->getMsgFormatter()->format($this);
+        return $this->format();
     }
 
+    /**
+     * format
+     * @return string
+     */
+    public function format(): string
+    {
+        return $this->getMsgFormatter()->format($this);
+    }
 }

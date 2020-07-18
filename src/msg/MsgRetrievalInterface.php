@@ -35,4 +35,10 @@ interface MsgRetrievalInterface
      * @return ErrorExceptionMsg
      */
     public function makeErrorExceptionMsg(): ErrorExceptionMsg;
+
+    /**
+     * format
+     * @return string
+     */
+    public function format() : string;
 }

@@ -99,7 +99,7 @@ class MsgCollectionTest extends TestCase
         $msg_1->shouldReceive('getMsgVars')->withNoArgs()->andReturn([$var_1]);
         $msg_1->shouldReceive('getMsgText')->withNoArgs()->andReturn($text_1);
         $this->msgCollection->addMsg($msg_1);
-        
+
         $frmtrOutput = $this->msgCollection->getMsgFormatter()->format($this->msgCollection);
         self::assertEquals($frmtrOutput, (string) $this->msgCollection);
     }
