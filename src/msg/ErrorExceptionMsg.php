@@ -12,4 +12,10 @@ namespace pvc\msg;
  */
 class ErrorExceptionMsg extends Msg implements ErrorExceptionMsgInterface
 {
+    public function format() : string
+    {
+        // always output msgVars for ErrorException messages
+        $this->getMsgFormatter()->outputMsgVars(true);
+        return parent::format();
+    }
 }
