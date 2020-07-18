@@ -7,9 +7,11 @@
 
 namespace tests\msg;
 
+use Mockery;
 use pvc\msg\ErrorExceptionMsg;
 use pvc\msg\Msg;
 use PHPUnit\Framework\TestCase;
+use pvc\msg\MsgFormatterInterface;
 
 class MsgTest extends TestCase
 {
@@ -81,6 +83,21 @@ class MsgTest extends TestCase
     {
         $msg = $this->msg->makeErrorExceptionMsg();
         self::assertTrue($msg instanceof ErrorExceptionMsg);
+    }
+
+    public function testSetGetMsgFormatter() : void
+    {
+        self::assertInstanceOf(MsgFormatterInterface::class, $this->msg->getMsgFormatter());
+        $frmtr = Mockery::mock(MsgFormatterInterface::class);
+        $this->msg->setMsgFormatter($frmtr);
+        self::assertEquals($frmtr, $this->msg->getMsgFormatter());
+
+    }
+
+    public function testSetMsgTextToEmptyString() : void
+    {
+        self::expectException(\Exception::class);
+        $this->msg->setMsgText('');
     }
 
     public function testToString() : void

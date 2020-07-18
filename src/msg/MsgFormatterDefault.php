@@ -7,9 +7,7 @@
 namespace pvc\msg;
 
 
-use Exception;
-
-trait MsgVarsOutputTrait
+class MsgFormatterDefault implements MsgFormatterInterface
 {
 
     /**
@@ -54,16 +52,11 @@ trait MsgVarsOutputTrait
         return $result ?: $msgText;
     }
 
-    /**
-     * __toString
-     * @return string
-     */
-    public function __toString()
+    public function format(MsgRetrievalInterface $msg): string
     {
-        $msgText = $this->getMsgText();
+        $msgText = $msg->getMsgText();
         $msgText = $this->outputMsgVars ? $msgText : $this->stripMsgVarsFromMsgText($msgText);
         $msgText = $this->tidyWhitespace($msgText);
-        return vsprintf($msgText, $this->getMsgVars());
+        return vsprintf($msgText, $msg->getMsgVars());
     }
-
 }

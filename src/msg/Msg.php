@@ -20,7 +20,6 @@ use Exception;
 
 class Msg implements MsgInterface
 {
-    use MsgVarsOutputTrait;
     use MsgInterchangeabilityTrait;
 
     /**
@@ -33,6 +32,10 @@ class Msg implements MsgInterface
      */
     protected string $msgText;
 
+    /**
+     * @var MsgFormatterInterface
+     */
+    protected MsgFormatterInterface $msgFormatter;
 
     /**
      * Msg constructor.
@@ -43,6 +46,7 @@ class Msg implements MsgInterface
     {
         $this->setMsgVars($vars);
         $this->setMsgText($msgText);
+        $this->setMsgFormatter(new MsgFormatterDefault());
     }
 
     /**
@@ -106,6 +110,25 @@ class Msg implements MsgInterface
             throw new Exception();
         }
         $this->msgText = $msgText;
+    }
+
+    public function setMsgFormatter(MsgFormatterInterface $formatter) : void
+    {
+        $this->msgFormatter = $formatter;
+    }
+
+    public function getMsgFormatter() : MsgFormatterInterface
+    {
+        return $this->msgFormatter;
+    }
+
+    /**
+     * __toString
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return $this->getMsgFormatter()->format($this);
     }
 
 }

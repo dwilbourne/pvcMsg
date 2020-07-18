@@ -23,7 +23,6 @@ use IteratorIterator;
  */
 class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
 {
-    use MsgVarsOutputTrait;
     use MsgInterchangeabilityTrait;
 
     /**
@@ -31,10 +30,20 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
      */
     protected array $messages = [];
 
+    protected MsgFormatterInterface $msgFormatter;
+
     /**
      * @var int
      */
     private int $pos;
+
+    /**
+     * MsgCollection constructor.
+     */
+    public function __construct()
+    {
+        $this->msgFormatter = new MsgFormatterDefault();
+    }
 
     /**
      * @function addMsg
@@ -108,7 +117,13 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
         foreach ($this->messages as $msg) {
             $msgText .= $msg->getMsgText() . ' ';
         }
-        return substr($msgText, 0, -1);
+        $msgText = substr($msgText, 0, -1);
+
+        if (empty($msgText)) {
+            throw new \Exception();
+        } else {
+            return $msgText;
+        }
     }
 
     /**
@@ -123,4 +138,24 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
         }
         return call_user_func_array('array_merge', $msgVars);
     }
+
+    public function setMsgFormatter(MsgFormatterInterface $formatter) : void
+    {
+        $this->msgFormatter = $formatter;
+    }
+
+    public function getMsgFormatter() : MsgFormatterInterface
+    {
+        return $this->msgFormatter;
+    }
+
+    /**
+     * __toString
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return $this->getMsgFormatter()->format($this);
+    }
+
 }

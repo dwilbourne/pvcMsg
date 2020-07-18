@@ -12,6 +12,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use pvc\msg\Msg;
 use pvc\msg\MsgCollection;
+use pvc\msg\MsgFormatterInterface;
 use pvc\msg\MsgRetrievalInterface;
 
 class MsgCollectionTest extends TestCase
@@ -74,4 +75,33 @@ class MsgCollectionTest extends TestCase
             self::assertEquals($messages[$i++], $msg);
         }
     }
+
+    public function testSetGetMsgFormatter() : void
+    {
+        self::assertInstanceOf(MsgFormatterInterface::class, $this->msgCollection->getMsgFormatter());
+        $frmtr = Mockery::mock(MsgFormatterInterface::class);
+        $this->msgCollection->setMsgFormatter($frmtr);
+        self::assertEquals($frmtr, $this->msgCollection->getMsgFormatter());
+
+    }
+
+    public function testGetEmptyMsgText() : void
+    {
+        self::expectException(\Exception::class);
+        $string = $this->msgCollection->getMsgText();
+    }
+
+    public function testToString() : void
+    {
+        $msg_1 = Mockery::mock(Msg::class);
+        $var_1 = 'foo';
+        $text_1 = 'some message text = %s';
+        $msg_1->shouldReceive('getMsgVars')->withNoArgs()->andReturn([$var_1]);
+        $msg_1->shouldReceive('getMsgText')->withNoArgs()->andReturn($text_1);
+        $this->msgCollection->addMsg($msg_1);
+        
+        $frmtrOutput = $this->msgCollection->getMsgFormatter()->format($this->msgCollection);
+        self::assertEquals($frmtrOutput, (string) $this->msgCollection);
+    }
+
 }
