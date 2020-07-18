@@ -7,7 +7,7 @@
 
 namespace pvc\msg;
 
-use Exception;
+use pvc\msg\err\InvalidMsgTextException;
 
 /**
  * parent class / default implementation for message creation
@@ -107,7 +107,7 @@ class Msg implements MsgInterface
     public function setMsgText(string $msgText): void
     {
         if (empty($msgText)) {
-            throw new Exception();
+            throw new InvalidMsgTextException();
         }
         $this->msgText = $msgText;
     }

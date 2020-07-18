@@ -9,7 +9,7 @@ namespace pvc\msg;
 
 use Countable;
 use Iterator;
-use IteratorIterator;
+use pvc\msg\err\InvalidMsgTextException;
 
 /**
  * MsgCollection honors MsgRetrievalInterface while providing a way to package a group of messages into a single object.
@@ -120,7 +120,7 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
         $msgText = substr($msgText, 0, -1);
 
         if (empty($msgText)) {
-            throw new \Exception();
+            throw new InvalidMsgTextException();
         } else {
             return $msgText;
         }
