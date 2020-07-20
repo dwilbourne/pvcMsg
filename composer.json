@@ -19,7 +19,8 @@
 		}
 	},
 	"require": {
-		"pvc/err": "dev-master"
+		"pvc/interfaces": "@dev",
+		"pvc/err": "@dev"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^8",
