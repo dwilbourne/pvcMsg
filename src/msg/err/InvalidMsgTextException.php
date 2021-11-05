@@ -6,7 +6,7 @@
 
 namespace pvc\msg\err;
 
-use pvc\err\throwable\ErrorExceptionConstants as ec;
+use pvc\msg\exception_codes\MsgExceptionCodes as ec;
 use pvc\err\throwable\exception\stock_rebrands\Exception;
 
 /**
@@ -17,8 +17,9 @@ class InvalidMsgTextException extends Exception
 {
     public function __construct()
     {
+        $msg = new InvalidMsgTextMsg();
         $code = ec::INVALID_MSGTEXT_EXCEPTION;
         $previous = null;
-        parent::__construct(new InvalidMsgTextMsg(), $code, $previous);
+        parent::__construct($msg, $code, $previous);
     }
 }

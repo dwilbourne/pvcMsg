@@ -1,8 +1,8 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /**
- * @package: pvc
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
- * @version: 1.0
  */
 
 namespace pvc\msg;
@@ -12,25 +12,19 @@ use Iterator;
 use pvc\msg\err\InvalidMsgTextException;
 
 /**
- * MsgCollection honors MsgRetrievalInterface while providing a way to package a group of messages into a single object.
+ * MsgCollection honors MsgInterface while providing a way to package a group of messages into a single object.
  *
  * Certain libraries will return several errors all at once.  In order to be able to process those errors as a
  * block, this class provides the structure to store multiple messages.
  *
  * Class MsgCollection
- *
- * @implements Iterator<int, MsgRetrievalInterface>
  */
-class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
+class MsgCollection implements Iterator, Countable, MsgInterface
 {
-    use MsgInterchangeabilityTrait;
-
     /**
-     * @var MsgRetrievalInterface[]
+     * @var MsgInterface[]
      */
     protected array $messages = [];
-
-    protected MsgFormatterInterface $msgFormatter;
 
     /**
      * @var int
@@ -38,18 +32,10 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
     private int $pos;
 
     /**
-     * MsgCollection constructor.
-     */
-    public function __construct()
-    {
-        $this->msgFormatter = new MsgFormatterDefault();
-    }
-
-    /**
      * @function addMsg
-     * @param MsgRetrievalInterface $msg
+     * @param MsgInterface $msg
      */
-    public function addMsg(MsgRetrievalInterface $msg): void
+    public function addMsg(MsgInterface $msg): void
     {
         $this->messages[] = $msg;
     }
@@ -57,7 +43,7 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
     /**
      * @function rewind
      */
-    public function rewind() : void
+    public function rewind(): void
     {
         $this->pos = 0;
     }
@@ -128,7 +114,7 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
 
     /**
      * getMsgVars
-     * @return mixed[]
+     * @return string[]
      */
     public function getMsgVars(): array
     {
@@ -137,33 +123,5 @@ class MsgCollection implements Iterator, Countable, MsgRetrievalInterface
             $msgVars[] = $msg->getMsgVars();
         }
         return call_user_func_array('array_merge', $msgVars);
-    }
-
-    public function setMsgFormatter(MsgFormatterInterface $formatter) : void
-    {
-        $this->msgFormatter = $formatter;
-    }
-
-    public function getMsgFormatter() : MsgFormatterInterface
-    {
-        return $this->msgFormatter;
-    }
-
-    /**
-     * __toString
-     * @return string
-     */
-    public function __toString() : string
-    {
-        return $this->format();
-    }
-
-    /**
-     * format
-     * @return string
-     */
-    public function format(): string
-    {
-        return $this->getMsgFormatter()->format($this);
     }
 }

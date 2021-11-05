@@ -10,20 +10,14 @@ namespace pvc\msg;
 use pvc\msg\err\InvalidMsgTextException;
 
 /**
- * parent class / default implementation for message creation
- *
- * Pvc distinguishes between user messages (see @UserMsg) and error / exception messages
- * (see @ErrorExceptionMsg).  Both of these classes inherit this implementation.
- *
  * Class Msg
  */
 
 class Msg implements MsgInterface
 {
-    use MsgInterchangeabilityTrait;
 
     /**
-     * @var mixed[]
+     * @var string[]
      */
     protected array $msgVars = [];
 
@@ -33,27 +27,21 @@ class Msg implements MsgInterface
     protected string $msgText;
 
     /**
-     * @var MsgFormatterInterface
-     */
-    protected MsgFormatterInterface $msgFormatter;
-
-    /**
      * Msg constructor.
-     * @param mixed[] $vars
+     * @param string[] $vars
      * @param string $msgText
      */
     public function __construct(array $vars, string $msgText)
     {
         $this->setMsgVars($vars);
         $this->setMsgText($msgText);
-        $this->setMsgFormatter(new MsgFormatterDefault());
     }
 
     /**
      * @function addMsgVar
      * @param mixed $var
      */
-    public function addMsgVar($var) : void
+    public function addMsgVar(string $var) : void
     {
         if (empty($var)) {
             $var = '{{ null or empty string }}';
@@ -62,17 +50,8 @@ class Msg implements MsgInterface
     }
 
     /**
-     * @function countMsgVars
-     * @return int
-     */
-    public function countMsgVars(): int
-    {
-        return count($this->msgVars);
-    }
-
-    /**
      * @function getMsgVars
-     * @return mixed[]
+     * @return string[]
      */
     public function getMsgVars(): array
     {
@@ -112,31 +91,4 @@ class Msg implements MsgInterface
         $this->msgText = $msgText;
     }
 
-    public function setMsgFormatter(MsgFormatterInterface $formatter) : void
-    {
-        $this->msgFormatter = $formatter;
-    }
-
-    public function getMsgFormatter() : MsgFormatterInterface
-    {
-        return $this->msgFormatter;
-    }
-
-    /**
-     * __toString
-     * @return string
-     */
-    public function __toString() : string
-    {
-        return $this->format();
-    }
-
-    /**
-     * format
-     * @return string
-     */
-    public function format(): string
-    {
-        return $this->getMsgFormatter()->format($this);
-    }
 }

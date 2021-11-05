@@ -8,11 +8,15 @@
 namespace tests\msg;
 
 use Mockery;
-use pvc\msg\ErrorExceptionMsg;
+use pvc\msg\err\InvalidMsgTextException;
 use pvc\msg\Msg;
 use PHPUnit\Framework\TestCase;
-use pvc\msg\MsgFormatterInterface;
 
+/**
+ * Class MsgTest
+ * @package tests\msg
+ * @covers \pvc\msg\Msg
+ */
 class MsgTest extends TestCase
 {
     /**
@@ -49,60 +53,39 @@ class MsgTest extends TestCase
         $this->msg = new Msg($this->vars, $this->msgText);
     }
 
-    public function testAddCountMsgVar() : void
+    public function testAddMsgVar(): void
     {
-        self::assertEquals(2, $this->msg->countMsgVars());
+        self::assertEquals(2, count($this->msg->getMsgVars()));
         $this->msg->addMsgVar('var3');
-        self::assertEquals(3, $this->msg->countMsgVars());
+        self::assertEquals(3, count($this->msg->getMsgVars()));
     }
 
-    public function testAddEmptyMsgVar() : void
+    public function testAddEmptyMsgVar(): void
     {
         $this->msg->addMsgVar('');
-        self::assertEquals(3, $this->msg->countMsgVars());
+        self::assertEquals(3, count($this->msg->getMsgVars()));
         $msgVars = $this->msg->getMsgVars();
         $expectedResult = '{{ null or empty string }}';
         self::assertEquals($expectedResult, $msgVars[2]);
     }
 
-    public function testSetGetMsgVars() : void
+    public function testSetGetMsgVars(): void
     {
         $array = ['var3', 'var4'];
         $this->msg->setMsgVars($array);
         self::assertEquals($array, $this->msg->getMsgVars());
     }
 
-    public function testSetGetMsgText() : void
+    public function testSetGetMsgText(): void
     {
         $text = 'this is some text';
         $this->msg->setMsgText($text);
         self::assertEquals($text, $this->msg->getMsgText());
     }
 
-    public function testMakeErrorExceptionMsg() : void
+    public function testSetMsgTextToEmptyString(): void
     {
-        $msg = $this->msg->makeErrorExceptionMsg();
-        self::assertTrue($msg instanceof ErrorExceptionMsg);
-    }
-
-    public function testSetGetMsgFormatter() : void
-    {
-        self::assertInstanceOf(MsgFormatterInterface::class, $this->msg->getMsgFormatter());
-        $frmtr = Mockery::mock(MsgFormatterInterface::class);
-        $this->msg->setMsgFormatter($frmtr);
-        self::assertEquals($frmtr, $this->msg->getMsgFormatter());
-
-    }
-
-    public function testSetMsgTextToEmptyString() : void
-    {
-        self::expectException(\Exception::class);
+        self::expectException(InvalidMsgTextException::class);
         $this->msg->setMsgText('');
-    }
-
-    public function testToString() : void
-    {
-        $expectedResult = 'this is some text = foo, bar';
-        self::assertEquals($expectedResult, (string) $this->msg);
     }
 }

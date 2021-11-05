@@ -10,14 +10,18 @@ namespace tests\msg;
 use Iterator;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use pvc\msg\err\InvalidMsgTextException;
 use pvc\msg\Msg;
 use pvc\msg\MsgCollection;
-use pvc\msg\MsgFormatterInterface;
-use pvc\msg\MsgRetrievalInterface;
+use pvc\msg\MsgInterface;
 
+/**
+ * Class MsgCollectionTest
+ * @package tests\msg
+ * @covers \pvc\msg\MsgCollection
+ */
 class MsgCollectionTest extends TestCase
 {
-
     protected MsgCollection $msgCollection;
 
     public function setUp(): void
@@ -25,15 +29,14 @@ class MsgCollectionTest extends TestCase
         $this->msgCollection = new MsgCollection();
     }
 
-    public function testIteratorInterface() : void
+    public function testIteratorInterface(): void
     {
         self::assertTrue($this->msgCollection instanceof Iterator);
         self::assertEquals(0, count($this->msgCollection));
     }
 
-    public function testAdd() : void
+    public function testAdd(): void
     {
-
         $msg_1 = Mockery::mock(Msg::class);
         $var_1 = 'foo';
         $text_1 = 'some message text = %s';
@@ -61,10 +64,10 @@ class MsgCollectionTest extends TestCase
         self::assertEquals($expectedResult, $this->msgCollection->getMsgText());
     }
 
-    public function testIteration() : void
+    public function testIteration(): void
     {
-        $msg1 = Mockery::mock(MsgRetrievalInterface::class);
-        $msg2 = Mockery::mock(MsgRetrievalInterface::class);
+        $msg1 = Mockery::mock(MsgInterface::class);
+        $msg2 = Mockery::mock(MsgInterface::class);
         $messages = [$msg1, $msg2];
         $this->msgCollection->addMsg($msg1);
         $this->msgCollection->addMsg($msg2);
@@ -76,32 +79,9 @@ class MsgCollectionTest extends TestCase
         }
     }
 
-    public function testSetGetMsgFormatter() : void
+    public function testGetEmptyMsgText(): void
     {
-        self::assertInstanceOf(MsgFormatterInterface::class, $this->msgCollection->getMsgFormatter());
-        $frmtr = Mockery::mock(MsgFormatterInterface::class);
-        $this->msgCollection->setMsgFormatter($frmtr);
-        self::assertEquals($frmtr, $this->msgCollection->getMsgFormatter());
-
-    }
-
-    public function testGetEmptyMsgText() : void
-    {
-        self::expectException(\Exception::class);
+        self::expectException(InvalidMsgTextException::class);
         $string = $this->msgCollection->getMsgText();
     }
-
-    public function testToString() : void
-    {
-        $msg_1 = Mockery::mock(Msg::class);
-        $var_1 = 'foo';
-        $text_1 = 'some message text = %s';
-        $msg_1->shouldReceive('getMsgVars')->withNoArgs()->andReturn([$var_1]);
-        $msg_1->shouldReceive('getMsgText')->withNoArgs()->andReturn($text_1);
-        $this->msgCollection->addMsg($msg_1);
-
-        $frmtrOutput = $this->msgCollection->getMsgFormatter()->format($this->msgCollection);
-        self::assertEquals($frmtrOutput, (string) $this->msgCollection);
-    }
-
 }

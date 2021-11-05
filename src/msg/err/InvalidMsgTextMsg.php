@@ -6,12 +6,12 @@
 
 namespace pvc\msg\err;
 
-use pvc\msg\ErrorExceptionMsg;
+use pvc\msg\Msg;
 
 /**
  * Class InvalidMsgTextMsg
  */
-class InvalidMsgTextMsg extends ErrorExceptionMsg
+class InvalidMsgTextMsg extends Msg
 {
     public function __construct()
     {
