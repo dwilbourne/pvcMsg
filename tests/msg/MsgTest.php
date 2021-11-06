@@ -7,7 +7,6 @@
 
 namespace tests\msg;
 
-use Mockery;
 use pvc\msg\err\InvalidMsgTextException;
 use pvc\msg\Msg;
 use PHPUnit\Framework\TestCase;
