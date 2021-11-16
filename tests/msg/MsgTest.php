@@ -1,19 +1,18 @@
 <?php
+
+declare(strict_types=1);
 /**
- * @package: pvc
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
- * @version: 1.0
  */
 
 namespace tests\msg;
 
-use pvc\msg\err\InvalidMsgTextException;
-use pvc\msg\Msg;
 use PHPUnit\Framework\TestCase;
+use pvc\msg\err\exceptions\InvalidMsgTextException;
+use pvc\msg\Msg;
 
 /**
  * Class MsgTest
- * @package tests\msg
  * @covers \pvc\msg\Msg
  */
 class MsgTest extends TestCase

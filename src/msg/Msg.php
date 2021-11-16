@@ -1,21 +1,20 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 /**
- * @package: pvc
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
- * @version: 1.0
  */
 
 namespace pvc\msg;
 
-use pvc\msg\err\InvalidMsgTextException;
+use pvc\msg\err\exceptions\InvalidMsgTextException;
+use pvc\msg\err\messages\InvalidMsgTextMsg;
 
 /**
  * Class Msg
  */
-
 class Msg implements MsgInterface
 {
-
     /**
      * @var string[]
      */
@@ -41,7 +40,7 @@ class Msg implements MsgInterface
      * @function addMsgVar
      * @param mixed $var
      */
-    public function addMsgVar(string $var) : void
+    public function addMsgVar(string $var): void
     {
         if (empty($var)) {
             $var = '{{ null or empty string }}';
@@ -62,7 +61,7 @@ class Msg implements MsgInterface
      * @function setMsgVars
      * @param mixed[] $vars
      */
-    public function setMsgVars(array $vars) : void
+    public function setMsgVars(array $vars): void
     {
         $this->msgVars = [];
         foreach ($vars as $var) {
@@ -86,9 +85,9 @@ class Msg implements MsgInterface
     public function setMsgText(string $msgText): void
     {
         if (empty($msgText)) {
-            throw new InvalidMsgTextException();
+            $msg = new InvalidMsgTextMsg();
+            throw new InvalidMsgTextException($msg);
         }
         $this->msgText = $msgText;
     }
-
 }

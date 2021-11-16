@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
@@ -16,7 +16,7 @@ trait ErrmsgTrait
         $this->errmsg = $errmsg;
     }
 
-    public function unsetErrmsg() : void
+    public function unsetErrmsg(): void
     {
         unset($this->errmsg);
     }
@@ -25,5 +25,4 @@ trait ErrmsgTrait
     {
         return $this->errmsg ?? null;
     }
-
 }
