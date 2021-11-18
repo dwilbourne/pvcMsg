@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace pvc\msg;
 
-trait MsgTrait
+trait HasMsgTrait
 {
     protected MsgInterface $msg;
 

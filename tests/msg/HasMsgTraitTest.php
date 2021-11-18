@@ -8,19 +8,19 @@ namespace tests\msg;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use pvc\msg\HasMsgTrait;
 use pvc\msg\MsgInterface;
-use pvc\msg\MsgTrait;
 
 /**
  * Class ErrmsgTraitTest
- * @covers \pvc\msg\MsgTrait
+ * @covers \pvc\msg\HasMsgTrait
  */
-class MsgTraitTest extends TestCase
+class HasMsgTraitTest extends TestCase
 {
     public function testSetGetUnsetErrmsg(): void
     {
         $msg = Mockery::mock(MsgInterface::class);
-        $trait = $this->getMockForTrait(MsgTrait::class);
+        $trait = $this->getMockForTrait(HasMsgTrait::class);
 
         /** @noinspection PhpUndefinedMethodInspection */
         $trait->setMsg($msg);
