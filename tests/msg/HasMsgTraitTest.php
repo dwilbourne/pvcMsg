@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
@@ -20,15 +21,17 @@ class HasMsgTraitTest extends TestCase
     public function testSetGetUnsetErrmsg(): void
     {
         $msg = Mockery::mock(MsgInterface::class);
-        $trait = $this->getMockForTrait(HasMsgTrait::class);
 
-        /** @noinspection PhpUndefinedMethodInspection */
+        $trait = new class () {
+            use HasMsgTrait {
+                setMsg as public;
+                unsetMsg as public;
+            }
+        };
+
         $trait->setMsg($msg);
-        /** @noinspection PhpUndefinedMethodInspection */
         self::assertEquals($msg, $trait->getMsg());
-        /** @noinspection PhpUndefinedMethodInspection */
         $trait->unsetMsg();
-        /** @noinspection PhpUndefinedMethodInspection */
         self::assertNull($trait->getMsg());
     }
 }

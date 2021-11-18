@@ -11,12 +11,12 @@ trait HasMsgTrait
 {
     protected MsgInterface $msg;
 
-    public function setMsg(MsgInterface $msg): void
+    protected function setMsg(MsgInterface $msg): void
     {
         $this->msg = $msg;
     }
 
-    public function unsetMsg(): void
+    protected function unsetMsg(): void
     {
         unset($this->msg);
     }
