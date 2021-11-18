@@ -8,27 +8,27 @@ namespace tests\msg;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use pvc\msg\ErrmsgTrait;
 use pvc\msg\MsgInterface;
+use pvc\msg\MsgTrait;
 
 /**
  * Class ErrmsgTraitTest
- * @covers \pvc\msg\ErrmsgTrait
+ * @covers \pvc\msg\MsgTrait
  */
-class ErrmsgTraitTest extends TestCase
+class MsgTraitTest extends TestCase
 {
     public function testSetGetUnsetErrmsg(): void
     {
         $msg = Mockery::mock(MsgInterface::class);
-        $trait = $this->getMockForTrait(ErrmsgTrait::class);
+        $trait = $this->getMockForTrait(MsgTrait::class);
 
         /** @noinspection PhpUndefinedMethodInspection */
-        $trait->setErrmsg($msg);
+        $trait->setMsg($msg);
         /** @noinspection PhpUndefinedMethodInspection */
-        self::assertEquals($msg, $trait->getErrmsg());
+        self::assertEquals($msg, $trait->getMsg());
         /** @noinspection PhpUndefinedMethodInspection */
-        $trait->unsetErrmsg();
+        $trait->unsetMsg();
         /** @noinspection PhpUndefinedMethodInspection */
-        self::assertNull($trait->getErrmsg());
+        self::assertNull($trait->getMsg());
     }
 }
