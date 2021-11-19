@@ -19,11 +19,12 @@ use pvc\msg\err\messages\InvalidMsgTextMsg;
  * block, this class provides the structure to store multiple messages.
  *
  * Class MsgCollection
+ * @implements Iterator
  */
 class MsgCollection implements Iterator, Countable, MsgInterface
 {
     /**
-     * @var MsgInterface[]
+     * @var array<MsgInterface>
      */
     protected array $messages = [];
 
@@ -51,7 +52,7 @@ class MsgCollection implements Iterator, Countable, MsgInterface
 
     /**
      * @function current
-     * @return mixed
+     * @return MsgInterface
      */
     public function current()
     {

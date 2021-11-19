@@ -38,7 +38,7 @@ class Msg implements MsgInterface
 
     /**
      * @function addMsgVar
-     * @param mixed $var
+     * @param string $var
      */
     public function addMsgVar(string $var): void
     {

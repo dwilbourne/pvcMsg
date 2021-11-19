@@ -18,6 +18,9 @@ use pvc\msg\MsgInterface;
  */
 class HasMsgTraitTest extends TestCase
 {
+    /**
+     * testSetGetUnsetErrmsg
+     */
     public function testSetGetUnsetErrmsg(): void
     {
         $msg = Mockery::mock(MsgInterface::class);
@@ -29,8 +32,10 @@ class HasMsgTraitTest extends TestCase
             }
         };
 
+        /** @phpstan-ignore-next-line */
         $trait->setMsg($msg);
         self::assertEquals($msg, $trait->getMsg());
+        /** @phpstan-ignore-next-line */
         $trait->unsetMsg();
         self::assertNull($trait->getMsg());
     }

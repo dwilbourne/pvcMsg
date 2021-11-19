@@ -21,19 +21,32 @@ use pvc\msg\MsgInterface;
  */
 class MsgCollectionTest extends TestCase
 {
+    /**
+     * @var MsgCollection
+     */
     protected MsgCollection $msgCollection;
 
+    /**
+     * setUp
+     */
     public function setUp(): void
     {
         $this->msgCollection = new MsgCollection();
     }
 
+    /**
+     * testIteratorInterface
+     */
     public function testIteratorInterface(): void
     {
         self::assertTrue($this->msgCollection instanceof Iterator);
         self::assertEquals(0, count($this->msgCollection));
     }
 
+    /**
+     * testAdd
+     * @throws InvalidMsgTextException
+     */
     public function testAdd(): void
     {
         $msg_1 = Mockery::mock(Msg::class);
@@ -63,6 +76,9 @@ class MsgCollectionTest extends TestCase
         self::assertEquals($expectedResult, $this->msgCollection->getMsgText());
     }
 
+    /**
+     * testIteration
+     */
     public function testIteration(): void
     {
         $msg1 = Mockery::mock(MsgInterface::class);
@@ -78,6 +94,10 @@ class MsgCollectionTest extends TestCase
         }
     }
 
+    /**
+     * testGetEmptyMsgText
+     * @throws InvalidMsgTextException
+     */
     public function testGetEmptyMsgText(): void
     {
         self::expectException(InvalidMsgTextException::class);

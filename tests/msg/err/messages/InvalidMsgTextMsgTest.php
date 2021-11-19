@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
@@ -16,6 +16,9 @@ use pvc\msg\err\messages\InvalidMsgTextMsg;
  */
 class InvalidMsgTextMsgTest extends TestCase
 {
+    /**
+     * testInvalidMsgTextMsg
+     */
     public function testInvalidMsgTextMsg(): void
     {
         $msg = new InvalidMsgTextMsg();
