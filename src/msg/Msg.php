@@ -7,87 +7,105 @@ declare(strict_types=1);
 
 namespace pvc\msg;
 
-use pvc\msg\err\exceptions\InvalidMsgTextException;
-use pvc\msg\err\messages\InvalidMsgTextMsg;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class Msg
+ * very minor rewrite of the TranslatableMessage class in Symfony ^5.2
  */
 class Msg implements MsgInterface
 {
     /**
-     * @var string[]
+     * @var string
      */
-    protected array $msgVars = [];
+    protected string $msgId;
+
+    /**
+     * @var array
+     */
+    protected array $parameters;
 
     /**
      * @var string
      */
-    protected string $msgText;
+    protected string $domain;
 
     /**
-     * Msg constructor.
-     * @param string[] $vars
-     * @param string $msgText
-     */
-    public function __construct(array $vars, string $msgText)
-    {
-        $this->setMsgVars($vars);
-        $this->setMsgText($msgText);
-    }
-
-    /**
-     * @function addMsgVar
-     * @param string $var
-     */
-    public function addMsgVar(string $var): void
-    {
-        if (empty($var)) {
-            $var = '{{ null or empty string }}';
-        }
-        $this->msgVars[] = $var;
-    }
-
-    /**
-     * @function getMsgVars
-     * @return string[]
-     */
-    public function getMsgVars(): array
-    {
-        return $this->msgVars;
-    }
-
-    /**
-     * @function setMsgVars
-     * @param mixed[] $vars
-     */
-    public function setMsgVars(array $vars): void
-    {
-        $this->msgVars = [];
-        foreach ($vars as $var) {
-            $this->addMsgVar($var);
-        }
-    }
-
-    /**
-     * @function getMsgText
      * @return string
      */
-    public function getMsgText(): string
+    public function getMsgId(): string
     {
-        return $this->msgText;
+        return $this->msgId;
     }
 
     /**
-     * @function setMsgText.
-     * @param string $msgText
+     * @param string $msgId
      */
-    public function setMsgText(string $msgText): void
+    public function setMsgId(string $msgId): void
     {
-        if (empty($msgText)) {
-            $msg = new InvalidMsgTextMsg();
-            throw new InvalidMsgTextException($msg);
-        }
-        $this->msgText = $msgText;
+        $this->msgId = $msgId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @param array $parameters
+     */
+    public function setParameters(array $parameters): void
+    {
+        $this->parameters = $parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomain(): string
+    {
+        return $this->domain;
+    }
+
+    /**
+     * @param string $domain
+     */
+    public function setDomain(string $domain): void
+    {
+        $this->domain = $domain;
+    }
+
+    /**
+     * @param string $msgId
+     * @param mixed[] $parameters
+     * @param string|null $domain
+     */
+    public function __construct(string $msgId, array $parameters = [], string $domain = null)
+    {
+        $this->setMsgId($msgId);
+        $this->setParameters($parameters);
+        $this->setDomain($domain);
+    }
+
+    public function trans(TranslatorInterface $translator, string $locale = null): string
+    {
+        return $translator->trans(
+            $this->getMsgId(),
+            array_map(
+                static function ($parameter) use ($translator, $locale) {
+                    return $parameter instanceof TranslatableInterface ? $parameter->trans(
+                        $translator,
+                        $locale
+                    ) : $parameter;
+                },
+                $this->getParameters()
+            ),
+            $this->getDomain(),
+            $locale
+        );
     }
 }

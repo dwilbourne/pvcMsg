@@ -7,9 +7,12 @@ declare(strict_types=1);
 
 namespace tests\msg;
 
+use DateTime;
+use Mockery;
 use PHPUnit\Framework\TestCase;
-use pvc\msg\err\exceptions\InvalidMsgTextException;
 use pvc\msg\Msg;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class MsgTest
@@ -17,73 +20,59 @@ use pvc\msg\Msg;
  */
 class MsgTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected string $var1;
-
-    /**
-     * @var string
-     */
-    protected string $var2;
-
-    /**
-     * @var string[]
-     */
-    protected array $vars;
-
-    /**
-     * @var string
-     */
-    protected string $msgText;
-
-    /**
-     * @var Msg
-     */
     protected Msg $msg;
+    protected string $msgId;
+    /**
+     * @var mixed[]
+     */
+    protected array $parameters;
+    protected TranslatableInterface $param2;
+    protected string $domain;
 
     public function setUp(): void
     {
-        $this->var1 = 'foo';
-        $this->var2 = 'bar';
-        $this->vars = [$this->var1, $this->var2];
-        $this->msgText = 'this is some text = %s, %s';
-        $this->msg = new Msg($this->vars, $this->msgText);
+        $this->msgId = 'foo';
+        /** @phpstan-ignore-next-line */
+        $this->param2 = Mockery::mock(TranslatableInterface::class);
+        $this->parameters = ['date' => new DateTime('2002/12/13'), 'translatable' => $this->param2];
+        $this->domain = 'myMessages';
+        $this->msg = new Msg($this->msgId, $this->parameters, $this->domain);
     }
 
-    public function testAddMsgVar(): void
+    public function testSetGetMsgId(): void
     {
-        self::assertEquals(2, count($this->msg->getMsgVars()));
-        $this->msg->addMsgVar('var3');
-        self::assertEquals(3, count($this->msg->getMsgVars()));
+        self::assertEquals($this->msgId, $this->msg->getMsgId());
     }
 
-    public function testAddEmptyMsgVar(): void
+    public function testSetGetParameters(): void
     {
-        $this->msg->addMsgVar('');
-        self::assertEquals(3, count($this->msg->getMsgVars()));
-        $msgVars = $this->msg->getMsgVars();
-        $expectedResult = '{{ null or empty string }}';
-        self::assertEquals($expectedResult, $msgVars[2]);
+        self::assertEquals($this->parameters, $this->msg->getParameters());
     }
 
-    public function testSetGetMsgVars(): void
+    public function testSetGetDomain(): void
     {
-        $array = ['var3', 'var4'];
-        $this->msg->setMsgVars($array);
-        self::assertEquals($array, $this->msg->getMsgVars());
+        self::assertEquals($this->domain, $this->msg->getDomain());
     }
 
-    public function testSetGetMsgText(): void
+    public function testTrans(): void
     {
-        $text = 'this is some text';
-        $this->msg->setMsgText($text);
-        self::assertEquals($text, $this->msg->getMsgText());
-    }
+        $locale = 'fr_FR';
+        $expectedResult = 'some string';
 
-    public function testSetMsgTextToEmptyString(): void
-    {
-        self::expectException(InvalidMsgTextException::class);
-        $this->msg->setMsgText('');
+        /* when second parameter is translated, this is what the parameters should look like */
+        $resultParameters = ['date' => $this->parameters['date'], 'translatable' => 'bam'];
+
+        $translator = Mockery::mock(TranslatorInterface::class);
+
+        /** @phpstan-ignore-next-line */
+        $this->param2->shouldReceive('trans')->with($translator, $locale)->andReturn('bam');
+
+        /** @phpstan-ignore-next-line */
+        $translator->shouldReceive('trans')
+                   ->with($this->msgId, $resultParameters, $this->domain, $locale)
+                   ->andReturn($expectedResult);
+
+        /** @phpstan-ignore-next-line */
+        self::assertEquals($expectedResult, $this->msg->trans($translator, $locale));
     }
 }

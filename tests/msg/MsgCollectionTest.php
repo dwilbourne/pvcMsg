@@ -10,7 +10,6 @@ namespace tests\msg;
 use Iterator;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use pvc\msg\err\exceptions\InvalidMsgTextException;
 use pvc\msg\Msg;
 use pvc\msg\MsgCollection;
 use pvc\msg\MsgInterface;
@@ -45,21 +44,11 @@ class MsgCollectionTest extends TestCase
 
     /**
      * testAdd
-     * @throws InvalidMsgTextException
      */
-    public function testAdd(): void
+    public function testAdd(): MsgCollection
     {
         $msg_1 = Mockery::mock(Msg::class);
-        $var_1 = 'foo';
-        $text_1 = 'some message text = %s';
-        $msg_1->shouldReceive('getMsgVars')->withNoArgs()->andReturn([$var_1]);
-        $msg_1->shouldReceive('getMsgText')->withNoArgs()->andReturn($text_1);
-
         $msg_2 = Mockery::mock(Msg::class);
-        $var_2 = 'bar';
-        $text_2 = 'some new message text = %s';
-        $msg_2->shouldReceive('getMsgVars')->withNoArgs()->andReturn([$var_2]);
-        $msg_2->shouldReceive('getMsgText')->withNoArgs()->andReturn($text_2);
 
         /** @phpstan-ignore-next-line */
         $this->msgCollection->addMsg($msg_1);
@@ -68,12 +57,7 @@ class MsgCollectionTest extends TestCase
         /** @phpstan-ignore-next-line */
         $this->msgCollection->addMsg($msg_2);
         self::assertEquals(2, count($this->msgCollection));
-
-        $expectedResult = [$var_1, $var_2];
-        self::assertEquals($expectedResult, $this->msgCollection->getMsgVars());
-
-        $expectedResult = $text_1 . ' ' . $text_2;
-        self::assertEquals($expectedResult, $this->msgCollection->getMsgText());
+        return $this->msgCollection;
     }
 
     /**
@@ -95,12 +79,13 @@ class MsgCollectionTest extends TestCase
     }
 
     /**
-     * testGetEmptyMsgText
-     * @throws InvalidMsgTextException
+     * testGetMessages
+     * @param MsgCollection $msgCollection
+     * @depends testAdd
      */
-    public function testGetEmptyMsgText(): void
+    public function testGetMessages(MsgCollection $msgCollection): void
     {
-        self::expectException(InvalidMsgTextException::class);
-        $string = $this->msgCollection->getMsgText();
+        $msgArray = $msgCollection->getMessages();
+        self::assertEquals(2, count($msgArray));
     }
 }

@@ -9,19 +9,15 @@ namespace pvc\msg;
 
 use Countable;
 use Iterator;
-use pvc\msg\err\exceptions\InvalidMsgTextException;
-use pvc\msg\err\messages\InvalidMsgTextMsg;
 
 /**
- * MsgCollection honors MsgInterface while providing a way to package a group of messages into a single object.
- *
  * Certain libraries will return several errors all at once.  In order to be able to process those errors as a
  * block, this class provides the structure to store multiple messages.
  *
  * Class MsgCollection
- * @implements Iterator
+ * @implements Iterator<MsgInterface>
  */
-class MsgCollection implements Iterator, Countable, MsgInterface
+class MsgCollection implements Iterator, Countable
 {
     /**
      * @var array<MsgInterface>
@@ -29,9 +25,9 @@ class MsgCollection implements Iterator, Countable, MsgInterface
     protected array $messages = [];
 
     /**
-     * @var int
+     * @var int|null
      */
-    private int $pos;
+    private int $pos = 0;
 
     /**
      * @function addMsg
@@ -54,25 +50,25 @@ class MsgCollection implements Iterator, Countable, MsgInterface
      * @function current
      * @return MsgInterface
      */
-    public function current()
+    public function current(): MsgInterface
     {
         return $this->messages[$this->pos];
     }
 
     /**
      * @function next
-     * @return int|void
+     * @return int
      */
-    public function next()
+    public function next(): int
     {
         return ++$this->pos;
     }
 
     /**
      * @function key
-     * @return bool|float|int|string|null
+     * @return int
      */
-    public function key()
+    public function key(): int
     {
         return $this->pos;
     }
@@ -81,7 +77,7 @@ class MsgCollection implements Iterator, Countable, MsgInterface
      * @function valid
      * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->messages[$this->pos]);
     }
@@ -96,35 +92,11 @@ class MsgCollection implements Iterator, Countable, MsgInterface
     }
 
     /**
-     * getMsgText
-     * @return string
+     * getMsgId
+     * @return MsgInterface[]
      */
-    public function getMsgText(): string
+    public function getMessages(): array
     {
-        $msgText = '';
-        foreach ($this->messages as $msg) {
-            $msgText .= $msg->getMsgText() . ' ';
-        }
-        $msgText = substr($msgText, 0, -1);
-
-        if (empty($msgText)) {
-            $msg = new InvalidMsgTextMsg();
-            throw new InvalidMsgTextException($msg);
-        } else {
-            return $msgText;
-        }
-    }
-
-    /**
-     * getMsgVars
-     * @return string[]
-     */
-    public function getMsgVars(): array
-    {
-        $msgVars = [];
-        foreach ($this->messages as $msg) {
-            $msgVars[] = $msg->getMsgVars();
-        }
-        return call_user_func_array('array_merge', $msgVars);
+        return $this->messages;
     }
 }
