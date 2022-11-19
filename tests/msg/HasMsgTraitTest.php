@@ -9,8 +9,8 @@ namespace tests\msg;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use pvc\interfaces\msg\MsgInterface;
 use pvc\msg\HasMsgTrait;
-use pvc\msg\MsgInterface;
 
 /**
  * Class ErrmsgTraitTest
@@ -25,7 +25,7 @@ class HasMsgTraitTest extends TestCase
     {
         $msg = Mockery::mock(MsgInterface::class);
 
-        $trait = new class () {
+        $trait = new class() {
             use HasMsgTrait {
                 setMsg as public;
                 unsetMsg as public;
@@ -35,7 +35,6 @@ class HasMsgTraitTest extends TestCase
         /** @phpstan-ignore-next-line */
         $trait->setMsg($msg);
         self::assertEquals($msg, $trait->getMsg());
-        /** @phpstan-ignore-next-line */
         $trait->unsetMsg();
         self::assertNull($trait->getMsg());
     }

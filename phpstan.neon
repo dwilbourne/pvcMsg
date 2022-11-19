@@ -11,3 +11,8 @@ parameters:
 	    -
 	        message: '#Mockery\\LegacyMockInterface given\.$#'
 	        path: tests/*
+	    # can't find a regex that phpstan will accept to say "ends in blah-blah-blah"
+	    #-
+	        #message: '#.*does not accept Mockery\LegacyMockInterface\.$#'
+	        #path: tests/*
+

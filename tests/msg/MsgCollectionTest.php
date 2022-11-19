@@ -12,7 +12,6 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use pvc\msg\Msg;
 use pvc\msg\MsgCollection;
-use pvc\msg\MsgInterface;
 
 /**
  * Class MsgCollectionTest
@@ -65,17 +64,17 @@ class MsgCollectionTest extends TestCase
      */
     public function testIteration(): void
     {
-        $msg1 = Mockery::mock(MsgInterface::class);
-        $msg2 = Mockery::mock(MsgInterface::class);
-        $messages = [$msg1, $msg2];
-        $this->msgCollection->addMsg($msg1);
-        $this->msgCollection->addMsg($msg2);
+	    $msg1 = Mockery::mock(Msg::class);
+	    $msg2 = Mockery::mock(Msg::class);
+	    $messages = [$msg1, $msg2];
+	    $this->msgCollection->addMsg($msg1);
+	    $this->msgCollection->addMsg($msg2);
 
-        $i = 0;
-        foreach ($this->msgCollection as $msg) {
-            self::assertEquals($i, $this->msgCollection->key());
-            self::assertEquals($messages[$i++], $msg);
-        }
+	    $i = 0;
+	    foreach ($this->msgCollection as $msg) {
+		    self::assertEquals($i, $this->msgCollection->key());
+		    self::assertEquals($messages[$i++], $msg);
+	    }
     }
 
     /**

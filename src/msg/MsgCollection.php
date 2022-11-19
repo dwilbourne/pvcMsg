@@ -7,96 +7,93 @@ declare(strict_types=1);
 
 namespace pvc\msg;
 
+use ArrayIterator;
 use Countable;
-use Iterator;
+use pvc\interfaces\msg\MsgInterface;
 
 /**
- * Certain libraries will return several errors all at once.  In order to be able to process those errors as a
- * block, this class provides the structure to store multiple messages.
- *
  * Class MsgCollection
- * @implements Iterator<MsgInterface>
+ * @extends ArrayIterator<int, MsgInterface>
  */
-class MsgCollection implements Iterator, Countable
+class MsgCollection extends ArrayIterator implements Countable
 {
-    /**
-     * @var array<MsgInterface>
-     */
-    protected array $messages = [];
+	/**
+	 * @var MsgInterface[]
+	 */
+	protected array $messages = [];
 
-    /**
-     * @var int|null
-     */
-    private int $pos = 0;
+	/**
+	 * @var int
+	 */
+	private int $pos = 0;
 
-    /**
-     * @function addMsg
-     * @param MsgInterface $msg
-     */
-    public function addMsg(MsgInterface $msg): void
-    {
-        $this->messages[] = $msg;
-    }
+	/**
+	 * @function addMsg
+	 * @param MsgInterface $msg
+	 */
+	public function addMsg(MsgInterface $msg): void
+	{
+		$this->messages[] = $msg;
+	}
 
-    /**
-     * @function rewind
-     */
-    public function rewind(): void
-    {
-        $this->pos = 0;
-    }
+	/**
+	 * @function rewind
+	 */
+	public function rewind(): void
+	{
+		$this->pos = 0;
+	}
 
-    /**
-     * @function current
-     * @return MsgInterface
-     */
-    public function current(): MsgInterface
-    {
-        return $this->messages[$this->pos];
-    }
+	/**
+	 * @function current
+	 * @return MsgInterface
+	 */
+	public function current(): MsgInterface
+	{
+		return $this->messages[$this->pos];
+	}
 
-    /**
-     * @function next
-     * @return int
-     */
-    public function next(): int
-    {
-        return ++$this->pos;
-    }
+	/**
+	 * @function next
+	 */
+	public function next(): void
+	{
+		++$this->pos;
+	}
 
-    /**
-     * @function key
-     * @return int
-     */
-    public function key(): int
-    {
-        return $this->pos;
-    }
+	/**
+	 * @function key
+	 * @return int
+	 */
+	public function key(): int
+	{
+		return $this->pos;
+	}
 
-    /**
-     * @function valid
-     * @return bool
-     */
-    public function valid(): bool
-    {
-        return isset($this->messages[$this->pos]);
-    }
+	/**
+	 * @function valid
+	 * @return bool
+	 */
+	public function valid(): bool
+	{
+		return isset($this->messages[$this->pos]);
+	}
 
-    /**
-     * @function count
-     * @return int|void
-     */
-    public function count()
-    {
-        return count($this->messages);
-    }
+	/**
+	 * @function count
+	 * @return int
+	 */
+	public function count(): int
+	{
+		return count($this->messages);
+	}
 
-    /**
-     * getMsgId
-     * @return MsgInterface[]
-     */
-    public function getMessages(): array
-    {
-        return $this->messages;
-    }
+	/**
+	 * getMsgId
+	 * @return MsgInterface[]
+	 */
+	public function getMessages(): array
+	{
+		return $this->messages;
+	}
 }

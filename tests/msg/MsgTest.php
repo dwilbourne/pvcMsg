@@ -8,11 +8,8 @@ declare(strict_types=1);
 namespace tests\msg;
 
 use DateTime;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 use pvc\msg\Msg;
-use Symfony\Contracts\Translation\TranslatableInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class MsgTest
@@ -20,59 +17,47 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class MsgTest extends TestCase
 {
-    protected Msg $msg;
-    protected string $msgId;
-    /**
-     * @var mixed[]
-     */
-    protected array $parameters;
-    protected TranslatableInterface $param2;
-    protected string $domain;
+	/**
+	 * @var Msg
+	 */
+	protected Msg $msg;
 
-    public function setUp(): void
-    {
-        $this->msgId = 'foo';
-        /** @phpstan-ignore-next-line */
-        $this->param2 = Mockery::mock(TranslatableInterface::class);
-        $this->parameters = ['date' => new DateTime('2002/12/13'), 'translatable' => $this->param2];
-        $this->domain = 'myMessages';
-        $this->msg = new Msg($this->msgId, $this->parameters, $this->domain);
-    }
+	/**
+	 * @var string
+	 */
+	protected string $msgId;
 
-    public function testSetGetMsgId(): void
-    {
-        self::assertEquals($this->msgId, $this->msg->getMsgId());
-    }
+	/**
+	 * @var mixed[]
+	 */
+	protected array $parameters;
 
-    public function testSetGetParameters(): void
-    {
-        self::assertEquals($this->parameters, $this->msg->getParameters());
-    }
+	public function setUp(): void
+	{
+		$this->msgId = 'foo';
+		$param1 = 'pvc is a great set of libraries.';
+		$param2 = new DateTime('2002/12/13');
+		$this->parameters = ['pvc_great' => $param1, 'date' => $param2];
+		$this->msg = new Msg($this->msgId, $this->parameters);
+	}
 
-    public function testSetGetDomain(): void
-    {
-        self::assertEquals($this->domain, $this->msg->getDomain());
-    }
+	/**
+	 * testSetGetMsgId
+	 * @covers Msg::setMsgId
+	 * @covers Msg::getMsgId
+	 */
+	public function testSetGetMsgId(): void
+	{
+		self::assertEquals($this->msgId, $this->msg->getMsgId());
+	}
 
-    public function testTrans(): void
-    {
-        $locale = 'fr_FR';
-        $expectedResult = 'some string';
-
-        /* when second parameter is translated, this is what the parameters should look like */
-        $resultParameters = ['date' => $this->parameters['date'], 'translatable' => 'bam'];
-
-        $translator = Mockery::mock(TranslatorInterface::class);
-
-        /** @phpstan-ignore-next-line */
-        $this->param2->shouldReceive('trans')->with($translator, $locale)->andReturn('bam');
-
-        /** @phpstan-ignore-next-line */
-        $translator->shouldReceive('trans')
-                   ->with($this->msgId, $resultParameters, $this->domain, $locale)
-                   ->andReturn($expectedResult);
-
-        /** @phpstan-ignore-next-line */
-        self::assertEquals($expectedResult, $this->msg->trans($translator, $locale));
-    }
+	/**
+	 * testSetGetParameters
+	 * @covers Msg::setParameters
+	 * @covers Msg::getParameters
+	 */
+	public function testSetGetParameters(): void
+	{
+		self::assertEquals($this->parameters, $this->msg->getParameters());
+	}
 }
