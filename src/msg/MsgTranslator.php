@@ -8,7 +8,9 @@ declare(strict_types=1);
 namespace pvc\msg;
 
 use MessageFormatter;
+use pvc\interfaces\frmtr\msg\FrmtrMsgInterface;
 use pvc\interfaces\msg\DomainCatalogInterface;
+use pvc\interfaces\msg\MsgInterface;
 use pvc\interfaces\msg\MsgTranslatorInterface;
 
 /**
@@ -16,7 +18,15 @@ use pvc\interfaces\msg\MsgTranslatorInterface;
  */
 class MsgTranslator implements MsgTranslatorInterface
 {
+    /**
+     * @var DomainCatalogInterface
+     */
     protected DomainCatalogInterface $catalog;
+
+    /**
+     * @var FrmtrMsgInterface
+     */
+    protected FrmtrMsgInterface $frmtr;
 
     public function __construct(DomainCatalogInterface $catalog)
     {
@@ -40,18 +50,30 @@ class MsgTranslator implements MsgTranslatorInterface
     }
 
     /**
+     * @param FrmtrMsgInterface $frmtr
+     */
+    public function setFrmtr(FrmtrMsgInterface $frmtr): void
+    {
+        $this->frmtr = $frmtr;
+    }
+
+    /**
+     * @return FrmtrMsgInterface
+     */
+    public function getFrmtr(): FrmtrMsgInterface
+    {
+        return $this->frmtr;
+    }
+
+    /**
      * trans
-     * @param string $msgId
-     * @param mixed[] $parameters
+     * @param MsgInterface $msg
      * @return string
      */
-    public function trans(string $msgId, array $parameters) : string
+    public function trans(MsgInterface $msg) : string
     {
-        $locale = $this->catalog->getLocale();
-        $pattern = $this->catalog->getMessage($msgId);
-        $icuFormatter = MessageFormatter::create($locale, $pattern);
-        $result = $icuFormatter->format($parameters);
-        // return the msgId is the format method encounters an error and returns false
-        return (false != $result) ? $result : $msgId;
+        $this->frmtr->setLocale($this->catalog->getLocale());
+        $this->frmtr->setFormat($this->catalog->getMessage($msg->getMsgId()));
+        return $this->frmtr->format($msg);
     }
 }
