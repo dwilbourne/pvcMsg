@@ -9,7 +9,9 @@ namespace tests\msg;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use pvc\interfaces\frmtr\msg\FrmtrMsgInterface;
 use pvc\interfaces\msg\DomainCatalogInterface;
+use pvc\interfaces\msg\MsgInterface;
 use pvc\msg\MsgTranslator;
 
 class MsgTranslatorTest extends TestCase
@@ -24,27 +26,39 @@ class MsgTranslatorTest extends TestCase
         $this->translator = new MsgTranslator($this->catalog);
     }
 
-    /**
-     * testSetGetTranslator
-     * @covers \pvc\msg\MsgTranslator::setCatalog
-     * @covers \pvc\msg\MsgTranslator::getCatalog
-     */
-    public function testSetGetTranslator() : void
-    {
-        $catalog = Mockery::mock(DomainCatalogInterface::class);
-        $this->translator->setCatalog($catalog);
-        self::assertEquals($catalog, $this->translator->getCatalog());
-    }
+	/**
+	 * testSetGetDomainCatalog
+	 * @covers \pvc\msg\MsgTranslator::setCatalog
+	 * @covers \pvc\msg\MsgTranslator::getCatalog
+	 */
+	public function testSetGetDomainCatalog(): void
+	{
+		$catalog = Mockery::mock(DomainCatalogInterface::class);
+		$this->translator->setCatalog($catalog);
+		self::assertEquals($catalog, $this->translator->getCatalog());
+	}
 
-    /**
-     * testConstruction
-     * @covers \pvc\msg\MsgTranslator::__construct
-     */
-    public function testConstruction() : void
-    {
-        $translator = new MsgTranslator($this->catalog);
-        self::assertEquals($this->catalog, $translator->getCatalog());
-    }
+	/**
+	 * testSetGetFrmtrMsg
+	 * @covers \pvc\msg\MsgTranslator::setFrmtr
+	 * @covers \pvc\msg\MsgTranslator::getFrmtr
+	 */
+	public function testSetGetFrmtrMsg(): void
+	{
+		$frmtr = Mockery::mock(FrmtrMsgInterface::class);
+		$this->translator->setFrmtr($frmtr);
+		self::assertEquals($frmtr, $this->translator->getFrmtr());
+	}
+
+	/**
+	 * testConstruction
+	 * @covers \pvc\msg\MsgTranslator::__construct
+	 */
+	public function testConstruction(): void
+	{
+		$translator = new MsgTranslator($this->catalog);
+		self::assertEquals($this->catalog, $translator->getCatalog());
+	}
 
     /**
      * testTrans
@@ -52,23 +66,30 @@ class MsgTranslatorTest extends TestCase
      */
     public function testTrans() : void
     {
-        $locale = 'fr';
-        /** @phpstan-ignore-next-line */
-        $this->catalog->expects('getLocale')->withNoArgs()->andReturns($locale);
+	    $locale = 'fr';
+	    $msgId = 'msgId';
+	    $msgText = 'some string';
 
-        $msgId = 'msgId';
-        $msg = 'some string';
-        /** @phpstan-ignore-next-line */
-        $this->catalog->expects('getMessage')->with($msgId)->andReturns($msg);
+	    $frmtr = Mockery::mock(FrmtrMsgInterface::class);
+	    $this->translator->setFrmtr($frmtr);
 
-        // just to make the terminology clean: a message from the catalog is used as a pattern in
-        // the international message formatter
-        $pattern = $msg;
+	    /** @phpstan-ignore-next-line */
+	    $this->catalog->expects('getLocale')->withNoArgs()->andReturns($locale);
+	    /** @phpstan-ignore-next-line */
+	    $frmtr->expects('setLocale')->with($locale);
 
-        // there are no placeholders in the message so the parameters will be ignored in the
-        // MessageFormatter::format call under the covers
-        $parameters = ['foo' => 'bar'];
+	    $msg = Mockery::mock(MsgInterface::class);
+	    /** @phpstan-ignore-next-line */
+	    $msg->expects('getMsgId')->withNoArgs()->andReturns($msgId);
+	    /** @phpstan-ignore-next-line */
+	    $this->catalog->expects('getMessage')->with($msgId)->andReturns($msgText);
+	    /** @phpstan-ignore-next-line */
+	    $frmtr->expects('setFormat')->with($msgText);
 
-        self::assertEquals($msg, $this->translator->trans($msgId, $parameters));
+	    /** @phpstan-ignore-next-line */
+	    $expectedResult = "translated message";
+	    $frmtr->expects('format')->with($msg)->andReturns($expectedResult);
+
+	    self::assertEquals($expectedResult, $this->translator->trans($msg));
     }
 }

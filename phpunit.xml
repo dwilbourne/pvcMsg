@@ -12,6 +12,7 @@
     </report>
   </coverage>
 
+
     <logging/>
   <testsuites>
     <testsuite name="src_tests">
