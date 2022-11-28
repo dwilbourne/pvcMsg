@@ -20,8 +20,7 @@
 	},
 	"minimum-stability": "dev",
 	"require": {
-		"pvc/interfaces": "*",
-		"ext-intl": "*"
+		"pvc/interfaces": "*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "*",

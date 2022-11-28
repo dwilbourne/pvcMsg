@@ -4,19 +4,21 @@
 
 
     <coverage>
-    <include>
-      <directory>src/msg*</directory>
-    </include>
-    <report>
-      <html outputDirectory="coverage"/>
-    </report>
-  </coverage>
+        <include>
+            <directory>src/msg*</directory>
+        </include>
+        <report>
+            <html outputDirectory="coverage"/>
+        </report>
+    </coverage>
 
 
     <logging/>
-  <testsuites>
-    <testsuite name="src_tests">
-      <directory>tests/msg*</directory>
-    </testsuite>
-  </testsuites>
+
+    <testsuites>
+        <testsuite name="src_tests">
+            <directory>tests/msg*</directory>
+        </testsuite>
+    </testsuites>
+
 </phpunit>

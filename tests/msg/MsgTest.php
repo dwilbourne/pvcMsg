@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
@@ -32,13 +33,19 @@ class MsgTest extends TestCase
 	 */
 	protected array $parameters;
 
+	/**
+	 * @var string
+	 */
+	protected string $domain;
+
 	public function setUp(): void
 	{
 		$this->msgId = 'foo';
 		$param1 = 'pvc is a great set of libraries.';
 		$param2 = new DateTime('2002/12/13');
 		$this->parameters = ['pvc_great' => $param1, 'date' => $param2];
-		$this->msg = new Msg($this->msgId, $this->parameters);
+		$this->domain = "userMessages";
+		$this->msg = new Msg($this->msgId, $this->parameters, $this->domain);
 	}
 
 	/**
@@ -59,5 +66,13 @@ class MsgTest extends TestCase
 	public function testSetGetParameters(): void
 	{
 		self::assertEquals($this->parameters, $this->msg->getParameters());
+	}
+
+	/**
+	 * testSetGetDomain
+	 */
+	public function testSetGetDomain(): void
+	{
+		self::assertEquals($this->domain, $this->msg->getDomain());
 	}
 }
