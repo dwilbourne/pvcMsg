@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
@@ -63,12 +64,12 @@ class DomainCatalog implements DomainCatalogInterface
     /**
      * load
      */
-    public function load() : void
+    public function load(): void
     {
-        $this->loader->loadCatalog();
-        $this->domain = $this->loader->getDomain();
-        $this->locale = $this->loader->getLocale();
-        $this->messages = $this->loader->getMessages();
+	    $this->loader->loadCatalog();
+	    $this->domain = $this->loader->getDomain();
+	    $this->locale = $this->loader->getLocale();
+	    $this->messages = $this->loader->getMessages();
     }
 
     /**
@@ -95,9 +96,9 @@ class DomainCatalog implements DomainCatalogInterface
         return $this->messages;
     }
 
-    public function getMessage(string $messageId) : string
-    {
-        // if the messageId is not in the catalog, just return it.
-        return $this->messages[$messageId] ?? $messageId;
-    }
+	public function getMessage(string $messageId): string
+	{
+		// if the messageId is not in the catalog, just return it.
+		return $this->messages[$messageId] ?? $messageId;
+	}
 }
