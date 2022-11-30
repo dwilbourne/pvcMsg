@@ -73,6 +73,7 @@ class MsgTranslatorTest extends TestCase
         $locale = 'fr_FR';
         $msgId = 'msgId';
         $msgText = 'some string';
+        $parameters = [1 => "fiver"];
 
         /** @phpstan-ignore-next-line */
         $this->catalog->expects('getLocale')->withNoArgs()->andReturns($locale);
@@ -86,10 +87,12 @@ class MsgTranslatorTest extends TestCase
         $this->catalog->expects('getMessage')->with($msgId)->andReturns($msgText);
         /** @phpstan-ignore-next-line */
         $this->frmtr->expects('setFormat')->with($msgText);
+        /** @phpstan-ignore-next-line */
+        $msg->expects('getParameters')->withNoArgs()->andReturns($parameters);
 
         /** @phpstan-ignore-next-line */
         $expectedResult = "translated message";
-        $this->frmtr->expects('format')->with($msg)->andReturns($expectedResult);
+        $this->frmtr->expects('format')->with($parameters)->andReturns($expectedResult);
 
         self::assertEquals($expectedResult, $this->translator->trans($msg));
     }

@@ -79,6 +79,6 @@ class MsgTranslator implements MsgTranslatorInterface
     {
         $this->frmtr->setLocale($this->catalog->getLocale());
         $this->frmtr->setFormat($this->catalog->getMessage($msg->getMsgId()));
-        return $this->frmtr->format($msg);
+        return $this->frmtr->format($msg->getParameters());
     }
 }

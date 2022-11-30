@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
@@ -69,9 +70,9 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
     /**
      * @return string|null
      */
-    public function getDomainCatalogFilename():? string
+    public function getDomainCatalogFilename(): ?string
     {
-        return $this->domainCatalogFilename ?? null;
+	    return $this->domainCatalogFilename ?? null;
     }
 
     /**
@@ -105,22 +106,22 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
      * loadCatalog
      * @throws Exception
      */
-    public function loadCatalog() : void
-    {
-        if (is_null($this->getDomainCatalogFilename())) {
-            throw new Exception('Domain catalog filename must be set before calling loadCatalog.');
-        }
-        // parse the messages out of the file first
-        $this->messages = $this->parseDomainCatalogFile();
+	public function loadCatalog(): void
+	{
+		if (is_null($this->getDomainCatalogFilename())) {
+			throw new Exception('Domain catalog filename must be set before calling loadCatalog.');
+		}
+		// parse the messages out of the file first
+		$this->messages = $this->parseDomainCatalogFile();
 
-        // if we got this far then everything is in order and we can hydrate this object
-        $this->domain = $this->basenameParts[0];
-        $this->locale = $this->basenameParts[1];
+		// if we got this far then everything is in order and we can hydrate this object
+		$this->domain = $this->basenameParts[0];
+		$this->locale = $this->basenameParts[1];
     }
 
     /**
      * parseDomainCatalogFile
      * @return array<string, string>
      */
-    abstract public function parseDomainCatalogFile() : array;
+	abstract public function parseDomainCatalogFile(): array;
 }
