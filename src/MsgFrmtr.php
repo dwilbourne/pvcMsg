@@ -1,10 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
+
+declare(strict_types=1);
 
 namespace pvc\msg;
 
@@ -16,17 +16,12 @@ use pvc\interfaces\msg\MsgInterface;
 /**
  * Class MsgTranslator
  */
-class FrmtrMsg implements FrmtrMsgInterface
+class MsgFrmtr implements FrmtrMsgInterface
 {
     /**
      * @var DomainCatalogInterface
      */
     protected DomainCatalogInterface $catalog;
-
-	/**
-	 * @var MessageFormatter
-	 */
-	protected MessageFormatter $messageFormatter;
 
     /**
      * @return DomainCatalogInterface
@@ -44,37 +39,25 @@ class FrmtrMsg implements FrmtrMsgInterface
         $this->catalog = $catalog;
     }
 
-	/**
-	 * @param MessageFormatter $messageFormatter
-	 */
-	public function setMessageFormatter(MessageFormatter $messageFormatter): void
-	{
-		$this->messageFormatter = $messageFormatter;
-	}
-
-	/**
-	 * @return MessageFormatter
-	 */
-	public function getMessageFormatter(): MessageFormatter
-	{
-		return $this->messageFormatter;
-	}
-
     /**
      * @param DomainCatalogInterface $catalog
-     * @param FrmtrMsgInterface $frmtr
      */
-    public function __construct(DomainCatalogInterface $catalog, MessageFormatter $frmtr)
+    public function __construct(DomainCatalogInterface $catalog)
     {
         $this->setDomainCatalog($catalog);
-		$this->setMessageFormatter($frmtr);
     }
 
+    /**
+     * format
+     * @param MsgInterface $msg
+     * @return string
+     * if it fails, it returns an empty string
+     */
     public function format(MsgInterface $msg): string
     {
-		$pattern = $this->catalog->getMessage($msg->getMsgId());
-		$locale = $this->catalog->getLocale();
+        $pattern = $this->catalog->getMessage($msg->getMsgId());
+        $locale = $this->catalog->getLocale();
         $frmtr = MessageFormatter::create($locale, $pattern);
-        return $frmtr->format($msg->getParameters());
+        return ($frmtr->format($msg->getParameters()) ?: '');
     }
 }

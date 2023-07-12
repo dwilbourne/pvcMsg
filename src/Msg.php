@@ -1,10 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
+
+declare(strict_types=1);
 
 namespace pvc\msg;
 
@@ -12,8 +12,6 @@ use pvc\interfaces\msg\MsgInterface;
 
 /**
  * Class Msg
- *
- *
  */
 class Msg implements MsgInterface
 {
@@ -25,13 +23,13 @@ class Msg implements MsgInterface
 
     /**
      * @var string
-     * the MsgTranslator will use this to make sure the correct catalog is loaded (or load the correct
+     * the MsgFrmtr will use this to make sure the correct catalog is loaded (or load the correct
      * one) before attempting to retrieve the message text
      */
     protected string $domain;
 
     /**
-     * @var array
+     * @var array<mixed>
      * parameters used to fill any placeholders in the message text
      */
     protected array $parameters;

@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
 
-namespace pvc\msg\catalog;
+declare(strict_types=1);
+
+namespace pvc\msg;
 
 use pvc\interfaces\msg\DomainCatalogInterface;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
@@ -42,7 +42,6 @@ class DomainCatalog implements DomainCatalogInterface
     public function __construct(DomainCatalogLoaderInterface $loader)
     {
         $this->setLoader($loader);
-        $this->load();
     }
 
     /**
@@ -64,12 +63,18 @@ class DomainCatalog implements DomainCatalogInterface
     /**
      * load
      */
-    public function load(): void
+    public function load(string $domain, string $locale): void
     {
-	    $this->loader->loadCatalog();
-	    $this->domain = $this->loader->getDomain();
-	    $this->locale = $this->loader->getLocale();
-	    $this->messages = $this->loader->getMessages();
+        /**
+         * no need to repeat loading a catalog....
+         */
+        if ($this->isLoaded($domain, $locale)) {
+            return;
+        }
+
+        $this->messages = $this->loader->loadCatalog($domain, $locale);
+        $this->domain = $domain;
+        $this->locale = $locale;
     }
 
     /**
@@ -77,7 +82,7 @@ class DomainCatalog implements DomainCatalogInterface
      */
     public function getDomain(): string
     {
-        return $this->domain;
+        return $this->domain ?? '';
     }
 
     /**
@@ -85,7 +90,7 @@ class DomainCatalog implements DomainCatalogInterface
      */
     public function getLocale(): string
     {
-        return $this->locale;
+        return $this->locale ?? '';
     }
 
     /**
@@ -93,12 +98,28 @@ class DomainCatalog implements DomainCatalogInterface
      */
     public function getMessages(): array
     {
-        return $this->messages;
+        return $this->messages ?? [];
     }
 
-	public function getMessage(string $messageId): string
-	{
-		// if the messageId is not in the catalog, just return it.
-		return $this->messages[$messageId] ?? $messageId;
-	}
+    public function getMessage(string $messageId): string
+    {
+        /**
+         * if the messageId is not in the catalog, just return it.
+         */
+        return $this->messages[$messageId] ?? $messageId;
+    }
+
+    public function isLoaded(string $domain = '', string $locale = ''): bool
+    {
+        /**
+         * if both arguments are empty, then indicate whether the catalog is populated with anything at all
+         */
+        if ($domain == '' && $locale == '') {
+            return ($this->getDomain() && $this->getLocale());
+        }
+        /**
+         * if either are set, then check to see if the catalog is loaded with the arguments specified
+         */
+        return ($domain == $this->getDomain() && $locale == $this->getLocale());
+    }
 }

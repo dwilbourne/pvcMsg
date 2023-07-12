@@ -14,18 +14,19 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"pvc\\": "src/",
-			"tests\\": "tests/"
+			"pvc\\msg\\": "src/",
+			"pvcTests\\msg\\": "tests/",
+			"pvcExamples\\msg\\": "examples/"
 		}
 	},
 	"minimum-stability": "dev",
 	"require": {
 		"pvc/interfaces": "*",
+		"pvc/err": "*",
 		"ext-intl": "*"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "*",
-		"mockery/mockery": "*",
+		"phpunit/phpunit": "^9",
 		"squizlabs/php_codesniffer": "*",
 		"friendsofphp/php-cs-fixer": "*",
 		"phpstan/phpstan": "*"

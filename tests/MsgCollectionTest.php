@@ -1,16 +1,17 @@
 <?php
 
-declare(strict_types=1);
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
 
-namespace tests\msg;
+declare(strict_types=1);
 
-use Iterator;
-use Mockery;
+namespace pvcTests\msg;
+
+use IteratorAggregate;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use pvc\msg\Msg;
+use pvc\interfaces\msg\MsgInterface;
 use pvc\msg\MsgCollection;
 
 /**
@@ -25,11 +26,23 @@ class MsgCollectionTest extends TestCase
     protected MsgCollection $msgCollection;
 
     /**
+     * @var MsgInterface|MockObject|(MsgInterface&MockObject)
+     */
+    protected MsgInterface|MockObject $msg1;
+
+    /**
+     * @var MsgInterface|MockObject|(MsgInterface&MockObject)
+     */
+    protected MsgInterface|MockObject $msg2;
+
+    /**
      * setUp
      */
     public function setUp(): void
     {
         $this->msgCollection = new MsgCollection();
+        $this->msg1 = $this->createMock(MsgInterface::class);
+        $this->msg2 = $this->createMock(MsgInterface::class);
     }
 
     /**
@@ -37,44 +50,37 @@ class MsgCollectionTest extends TestCase
      */
     public function testIteratorInterface(): void
     {
-        self::assertTrue($this->msgCollection instanceof Iterator);
+        self::assertTrue($this->msgCollection instanceof IteratorAggregate);
         self::assertEquals(0, count($this->msgCollection));
     }
 
     /**
      * testAdd
+     * @covers \pvc\msg\MsgCollection::addMsg
+     * @covers \pvc\msg\MsgCollection::count
      */
     public function testAdd(): MsgCollection
     {
-        $msg_1 = Mockery::mock(Msg::class);
-        $msg_2 = Mockery::mock(Msg::class);
-
-        /** @phpstan-ignore-next-line */
-        $this->msgCollection->addMsg($msg_1);
+        $this->msgCollection->addMsg($this->msg1);
         self::assertEquals(1, count($this->msgCollection));
 
-        /** @phpstan-ignore-next-line */
-        $this->msgCollection->addMsg($msg_2);
+        $this->msgCollection->addMsg($this->msg2);
         self::assertEquals(2, count($this->msgCollection));
         return $this->msgCollection;
     }
 
     /**
      * testIteration
+     * @depends testAdd
      */
-    public function testIteration(): void
+    public function testIteration(MsgCollection $msgCollection): void
     {
-	    $msg1 = Mockery::mock(Msg::class);
-	    $msg2 = Mockery::mock(Msg::class);
-	    $messages = [$msg1, $msg2];
-	    $this->msgCollection->addMsg($msg1);
-	    $this->msgCollection->addMsg($msg2);
+        $messages = [$this->msg1, $this->msg2];
 
-	    $i = 0;
-	    foreach ($this->msgCollection as $msg) {
-		    self::assertEquals($i, $this->msgCollection->key());
-		    self::assertEquals($messages[$i++], $msg);
-	    }
+        $i = 0;
+        foreach ($msgCollection as $msg) {
+            self::assertEquals($messages[$i++], $msg);
+        }
     }
 
     /**
@@ -85,6 +91,7 @@ class MsgCollectionTest extends TestCase
     public function testGetMessages(MsgCollection $msgCollection): void
     {
         $msgArray = $msgCollection->getMessages();
+        self::assertIsArray($msgArray);
         self::assertEquals(2, count($msgArray));
     }
 }
