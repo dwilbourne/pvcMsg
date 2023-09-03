@@ -98,6 +98,21 @@ class MsgTest extends TestCase
     }
 
     /**
+     * testSetMsgContentOptionalParameterArgument
+     * @covers \pvc\msg\Msg::setMsgContent
+     */
+    public function testSetMsgContentOptionalParameterArgument(): void
+    {
+        $this->msg->setMsgContent($this->msgId);
+        self::assertEquals($this->msgId, $this->msg->getMsgId());
+        self::assertNull($this->msg->getParameters());
+        /**
+         * verify null domain parameter does not reset the domain property to null
+         */
+        self::assertIsString($this->msg->getDomain());
+    }
+
+    /**
      * testClear
      * @covers \pvc\msg\Msg::clear
      */

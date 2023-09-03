@@ -70,7 +70,7 @@ class Msg implements MsgInterface
      * @param string $msgId
      * @param mixed[] $parameters
      */
-    public function setMsgContent(string $msgId, array $parameters = [], string $domain = null): void
+    public function setMsgContent(string $msgId, array $parameters = null, string $domain = null): void
     {
         $this->msgId = $msgId;
         $this->parameters = $parameters;
