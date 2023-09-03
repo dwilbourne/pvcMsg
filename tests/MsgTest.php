@@ -44,39 +44,68 @@ class MsgTest extends TestCase
         $param2 = new DateTime('2002/12/13');
         $this->parameters = ['pvc_great' => $param1, 'date' => $param2];
         $this->domain = 'userMessages';
-        $this->msg = new Msg($this->msgId, $this->parameters, $this->domain);
+        $this->msg = new Msg();
     }
 
     /**
      * testSetGetMsgId
-     * @covers \pvc\msg\Msg::__construct
-     * @covers \pvc\msg\Msg::setMsgId
+     * @covers \pvc\msg\Msg::setMsgContent
      * @covers \pvc\msg\Msg::getMsgId
      */
     public function testSetGetMsgId(): void
     {
+        $this->msg->setMsgContent($this->msgId, $this->parameters);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
     }
 
     /**
      * testSetGetParameters
-     * @covers \pvc\msg\Msg::__construct
-     * @covers \pvc\msg\Msg::setParameters
+     * @covers \pvc\msg\Msg::setMsgContent
      * @covers \pvc\msg\Msg::getParameters
      */
     public function testSetGetParameters(): void
     {
+        $this->msg->setMsgContent($this->msgId, $this->parameters);
         self::assertEquals($this->parameters, $this->msg->getParameters());
     }
 
     /**
      * testSetGetDomain
-     * @covers \pvc\msg\Msg::__construct
      * @covers \pvc\msg\Msg::setDomain
      * @covers \pvc\msg\Msg::getDomain
      */
     public function testSetGetDomain(): void
     {
+        /**
+         * verify there is a default domain set
+         */
+        self::assertIsString($this->msg->getDomain());
+
+        $this->msg->setDomain($this->domain);
         self::assertEquals($this->domain, $this->msg->getDomain());
+    }
+
+    /**
+     * testSetMsgContent
+     * @covers \pvc\msg\Msg::setMsgContent
+     */
+    public function testSetMsgContent(): void
+    {
+        $this->msg->setMsgContent($this->msgId, $this->parameters, $this->domain);
+        self::assertEquals($this->msgId, $this->msg->getMsgId());
+        self::assertEquals($this->parameters, $this->msg->getParameters());
+        self::assertEquals($this->domain, $this->msg->getDomain());
+    }
+
+    /**
+     * testClear
+     * @covers \pvc\msg\Msg::clear
+     */
+    public function testClear(): void
+    {
+        $this->msg->setMsgContent($this->msgId, $this->parameters);
+        $this->msg->clear();
+        self::assertNull($this->msg->getMsgId());
+        self::assertNull($this->msg->getParameters());
     }
 }

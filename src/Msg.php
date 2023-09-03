@@ -19,35 +19,27 @@ class Msg implements MsgInterface
      * @var string
      * this is the id that will be used to retrieve the full message from the domain catalog
      */
-    protected string $msgId;
+    protected ?string $msgId;
 
     /**
      * @var string
      * the MsgFrmtr will use this to make sure the correct catalog is loaded (or load the correct
      * one) before attempting to retrieve the message text
      */
-    protected string $domain;
+    protected string $domain = 'messages';
 
     /**
      * @var array<mixed>
      * parameters used to fill any placeholders in the message text
      */
-    protected array $parameters;
+    protected ?array $parameters;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMsgId(): string
+    public function getMsgId(): ?string
     {
-        return $this->msgId;
-    }
-
-    /**
-     * @param string $msgId
-     */
-    public function setMsgId(string $msgId): void
-    {
-        $this->msgId = $msgId;
+        return $this->msgId ?? null;
     }
 
     /**
@@ -69,27 +61,30 @@ class Msg implements MsgInterface
     /**
      * @return array<mixed>
      */
-    public function getParameters(): array
+    public function getParameters(): ?array
     {
-        return $this->parameters;
-    }
-
-    /**
-     * @param array<mixed> $parameters
-     */
-    public function setParameters(array $parameters): void
-    {
-        $this->parameters = $parameters;
+        return $this->parameters ?? null;
     }
 
     /**
      * @param string $msgId
      * @param mixed[] $parameters
      */
-    public function __construct(string $msgId, array $parameters = [], string $domain = 'messages')
+    public function setMsgContent(string $msgId, array $parameters = [], string $domain = null): void
     {
-        $this->setMsgId($msgId);
-        $this->setParameters($parameters);
-        $this->setDomain($domain);
+        $this->msgId = $msgId;
+        $this->parameters = $parameters;
+        if ($domain) {
+            $this->setDomain($domain);
+        }
+    }
+
+    /**
+     * clear
+     */
+    public function clear(): void
+    {
+        unset($this->msgId);
+        unset($this->parameters);
     }
 }
