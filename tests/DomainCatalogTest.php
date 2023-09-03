@@ -145,10 +145,10 @@ class DomainCatalogTest extends TestCase
      * testGetMessageReturnsIdIfDoesNotExistInCatalog
      * @covers \pvc\msg\DomainCatalog::getMessage
      */
-    public function testGetMessageReturnsIdIfItDoesNotExistInCatalog(): void
+    public function testGetMessageReturnsNullIfItDoesNotExistInCatalog(): void
     {
         $msgId = 'foobar';
-        self::assertEquals($msgId, $this->catalog->getMessage($msgId));
+        self::assertNull($this->catalog->getMessage($msgId));
     }
 
     /**

@@ -12,6 +12,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use pvc\interfaces\msg\DomainCatalogInterface;
 use pvc\interfaces\msg\MsgInterface;
+use pvc\msg\err\MsgIdNotSetException;
+use pvc\msg\err\NonExistentMessageException;
 use pvc\msg\MsgFrmtr;
 
 class MsgFrmtrTest extends TestCase
@@ -66,5 +68,36 @@ class MsgFrmtrTest extends TestCase
         $actualResult = $this->frmtr->format($msg);
 
         self::assertEquals($expectedResult, $actualResult);
+    }
+
+    /**
+     * testMsgThrowsExceptionIfMsgIdNotSet
+     * @throws MsgIdNotSetException
+     * @throws \pvc\msg\err\NonExistentMessageException
+     * @covers \pvc\msg\MsgFrmtr::format
+     */
+    public function testMsgThrowsExceptionIfMsgIdNotSet(): void
+    {
+        $msg = $this->createMock(MsgInterface::class);
+        $msg->method('getMsgId')->willReturn(null);
+        self::expectException(MsgIdNotSetException::class);
+        $this->frmtr->format($msg);
+    }
+
+    /**
+     * testMsgTthrowsExceptionIfMessageIsNotInCatalog
+     * @throws MsgIdNotSetException
+     * @throws NonExistentMessageException
+     * @covers \pvc\msg\MsgFrmtr::format
+     */
+    public function testMsgTthrowsExceptionIfMessageIsNotInCatalog(): void
+    {
+        $msgId = 'msgId';
+        $msg = $this->createMock(MsgInterface::class);
+        $msg->method('getMsgId')->willReturn($msgId);
+
+        $this->catalog->method('getMessage')->with($msgId)->willReturn(null);
+        self::expectException(NonExistentMessageException::class);
+        $this->frmtr->format($msg);
     }
 }

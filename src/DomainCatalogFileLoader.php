@@ -41,7 +41,7 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
         if (!is_dir($dirname)) {
             throw new NonExistentDomainCatalogDirectoryException($dirname);
         }
-        $this->domainCatalogFilename = $dirname;
+        $this->domainCatalogDirectory = $dirname;
     }
 
     /**
@@ -49,7 +49,7 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
      */
     public function getDomainCatalogDirectory(): string
     {
-        return $this->domainCatalogFilename ?? '';
+        return $this->domainCatalogDirectory ?? '';
     }
 
     /**

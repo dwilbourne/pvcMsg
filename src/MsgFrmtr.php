@@ -12,6 +12,8 @@ use MessageFormatter;
 use pvc\interfaces\frmtr\msg\FrmtrMsgInterface;
 use pvc\interfaces\msg\DomainCatalogInterface;
 use pvc\interfaces\msg\MsgInterface;
+use pvc\msg\err\MsgIdNotSetException;
+use pvc\msg\err\NonExistentMessageException;
 
 /**
  * Class MsgTranslator
@@ -55,9 +57,18 @@ class MsgFrmtr implements FrmtrMsgInterface
      */
     public function format(MsgInterface $msg): string
     {
-        $pattern = $this->catalog->getMessage($msg->getMsgId());
+        if (!$msgId = $msg->getMsgId()) {
+            throw new MsgIdNotSetException();
+        }
+
+        $pattern = $this->catalog->getMessage($msgId);
+        if (!$pattern) {
+            throw new NonExistentMessageException($msgId);
+        }
+
         $locale = $this->catalog->getLocale();
         $frmtr = MessageFormatter::create($locale, $pattern);
+
         return ($frmtr->format($msg->getParameters()) ?: '');
     }
 }

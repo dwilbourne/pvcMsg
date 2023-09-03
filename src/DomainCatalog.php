@@ -101,12 +101,17 @@ class DomainCatalog implements DomainCatalogInterface
         return $this->messages ?? [];
     }
 
-    public function getMessage(string $messageId): string
+    /**
+     * getMessage
+     * @param string $messageId
+     * @return string|null
+     */
+    public function getMessage(string $messageId): ?string
     {
         /**
          * if the messageId is not in the catalog, just return it.
          */
-        return $this->messages[$messageId] ?? $messageId;
+        return $this->messages[$messageId] ?? null;
     }
 
     public function isLoaded(string $domain = '', string $locale = ''): bool
