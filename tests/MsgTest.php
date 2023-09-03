@@ -105,7 +105,8 @@ class MsgTest extends TestCase
     {
         $this->msg->setMsgContent($this->msgId);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
-        self::assertNull($this->msg->getParameters());
+        self::assertIsArray($this->msg->getParameters());
+        self::assertEmpty($this->msg->getParameters());
         /**
          * verify null domain parameter does not reset the domain property to null
          */
@@ -121,6 +122,6 @@ class MsgTest extends TestCase
         $this->msg->setMsgContent($this->msgId, $this->parameters);
         $this->msg->clear();
         self::assertNull($this->msg->getMsgId());
-        self::assertNull($this->msg->getParameters());
+        self::assertEmpty($this->msg->getParameters());
     }
 }

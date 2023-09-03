@@ -3,6 +3,7 @@
 /**
  * @author: Doug Wilbourne (dougwilbourne@gmail.com)
  */
+
 declare(strict_types=1);
 
 namespace pvc\msg\err;
@@ -17,6 +18,6 @@ class NonExistentMessageException extends LogicException
 {
     public function __construct(string $msgId, Throwable $prev = null)
     {
-        parent::__construct($msgId);
+        parent::__construct($msgId, $prev);
     }
 }

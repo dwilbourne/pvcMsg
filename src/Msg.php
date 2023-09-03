@@ -61,9 +61,9 @@ class Msg implements MsgInterface
     /**
      * @return array<mixed>
      */
-    public function getParameters(): ?array
+    public function getParameters(): array
     {
-        return $this->parameters ?? null;
+        return $this->parameters ?? [];
     }
 
     /**
