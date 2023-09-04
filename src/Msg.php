@@ -70,7 +70,7 @@ class Msg implements MsgInterface
      * @param string $msgId
      * @param mixed[] $parameters
      */
-    public function setMsgContent(string $msgId, array $parameters = null, string $domain = null): void
+    public function setContent(string $msgId, array $parameters = null, string $domain = null): void
     {
         $this->msgId = $msgId;
         $this->parameters = $parameters;
@@ -82,9 +82,18 @@ class Msg implements MsgInterface
     /**
      * clear
      */
-    public function clear(): void
+    public function clearContent(): void
     {
         unset($this->msgId);
         unset($this->parameters);
+    }
+
+    /**
+     * contentIsSet
+     * @return bool
+     */
+    public function contentIsSet(): bool
+    {
+        return isset($this->msgId);
     }
 }

@@ -49,23 +49,23 @@ class MsgTest extends TestCase
 
     /**
      * testSetGetMsgId
-     * @covers \pvc\msg\Msg::setMsgContent
+     * @covers \pvc\msg\Msg::setContent
      * @covers \pvc\msg\Msg::getMsgId
      */
     public function testSetGetMsgId(): void
     {
-        $this->msg->setMsgContent($this->msgId, $this->parameters);
+        $this->msg->setContent($this->msgId, $this->parameters);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
     }
 
     /**
      * testSetGetParameters
-     * @covers \pvc\msg\Msg::setMsgContent
+     * @covers \pvc\msg\Msg::setContent
      * @covers \pvc\msg\Msg::getParameters
      */
     public function testSetGetParameters(): void
     {
-        $this->msg->setMsgContent($this->msgId, $this->parameters);
+        $this->msg->setContent($this->msgId, $this->parameters);
         self::assertEquals($this->parameters, $this->msg->getParameters());
     }
 
@@ -87,23 +87,24 @@ class MsgTest extends TestCase
 
     /**
      * testSetMsgContent
-     * @covers \pvc\msg\Msg::setMsgContent
+     * @covers \pvc\msg\Msg::setContent
      */
     public function testSetMsgContent(): void
     {
-        $this->msg->setMsgContent($this->msgId, $this->parameters, $this->domain);
+        $this->msg->setContent($this->msgId, $this->parameters, $this->domain);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
         self::assertEquals($this->parameters, $this->msg->getParameters());
         self::assertEquals($this->domain, $this->msg->getDomain());
+        self::assertTrue($this->msg->contentIsSet());
     }
 
     /**
      * testSetMsgContentOptionalParameterArgument
-     * @covers \pvc\msg\Msg::setMsgContent
+     * @covers \pvc\msg\Msg::setContent
      */
     public function testSetMsgContentOptionalParameterArgument(): void
     {
-        $this->msg->setMsgContent($this->msgId);
+        $this->msg->setContent($this->msgId);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
         self::assertIsArray($this->msg->getParameters());
         self::assertEmpty($this->msg->getParameters());
@@ -115,13 +116,19 @@ class MsgTest extends TestCase
 
     /**
      * testClear
-     * @covers \pvc\msg\Msg::clear
+     * @covers \pvc\msg\Msg::clearContent
+     * @covers \pvc\msg\Msg::contentIsSet
      */
-    public function testClear(): void
+    public function testClearContent(): void
     {
-        $this->msg->setMsgContent($this->msgId, $this->parameters);
-        $this->msg->clear();
+        self::assertFalse($this->msg->contentIsSet());
+
+        $this->msg->setContent($this->msgId, $this->parameters);
+        self::assertTrue($this->msg->contentIsSet());
+
+        $this->msg->clearContent();
         self::assertNull($this->msg->getMsgId());
         self::assertEmpty($this->msg->getParameters());
+        self::assertFalse($this->msg->contentIsSet());
     }
 }
