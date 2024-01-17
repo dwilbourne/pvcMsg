@@ -31,7 +31,7 @@ class _MsgXData extends XDataAbstract
     public function getXMessageTemplates(): array
     {
         return [
-            NonExistentDomainCatalogFileException::class => 'Domain catalog file ${filename} does not exist.',
+            NonExistentDomainCatalogFileException::class => 'Domain catalog file ${filename} does not exist for locale ${locale} or the default \'en\'.',
             NonExistentDomainCatalogDirectoryException::class => 'Domain catalog directory ${dirname} does not exist or is inaccessible.',
             NonExistentMessageException::class => 'Catalog has no message that corresponds to msg id ${msgId}',
             InvalidDomainCatalogFileException::class => 'Domain catalog file was not parseable into an array<string, string>.',

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace pvc\msg;
 
+use Locale;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
 use pvc\msg\err\NonExistentDomainCatalogDirectoryException;
 use pvc\msg\err\NonExistentDomainCatalogFileException;
@@ -49,21 +50,67 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
      */
     public function getDomainCatalogDirectory(): string
     {
-        return $this->domainCatalogDirectory ?? '';
+        return $this->domainCatalogDirectory;
     }
 
     /**
-     * createCatalogFilenameFromDomainLocale
+     * getPossibleFilenamePartsFromLocale
+     * @param string $locale
+     * @return array
+     */
+    protected function getPossibleFilenamePartsFromLocale(string $locale): array
+    {
+        /**
+         * the order of this is important.  We want the more specific filename parts at the beginning and the most
+         * generalized (e.g. just a language) at the end.
+         *
+         * Symfony uses the concept of a 'parent locale', which is a more sophisticated approach.  It requires the
+         * construction of a set parent locales and their "children".  For example, Argentinian spanish would degrade
+         * to south american spanish.
+         *
+         * If there is no catalog that works for the locale specified, try english as the default.
+         */
+
+        /** array_filter removes any empty strings */
+        $localeArray = array_filter([
+                                        Locale::getPrimaryLanguage($locale),
+                                        Locale::getScript($locale),
+                                        Locale::getRegion($locale)
+                                    ]);
+        while (count($localeArray) > 0) {
+            $result[] = implode('_', $localeArray);
+            array_pop($localeArray);
+        }
+        $result[] = 'en';
+        return array_unique($result);
+    }
+
+    /**
+     * getCatalogFilePathFromDomainLocale
      * @param string $domain
      * @param string $locale
      * @return string
      */
-    public function createCatalogFilenameFromDomainLocale(string $domain, string $locale): string
+    public function getCatalogFilePathFromDomainLocale(string $domain, string $locale = ''): string
     {
         /**
-         * construct catalog filename in the canonical form <domain>.<locale>.<filetype>
+         * construct catalog filename in the canonical form <domain>.<locale>.<filetype> where locale is either the
+         * language_script_region or language_region or language.
          */
-        return ($domain . '.' . $locale . '.' . $this->getFileType());
+
+        $possibleFilenameParts = $this->getPossibleFilenamePartsFromLocale($locale);
+
+        /**
+         * return the first (e.g. most specific) domain catalog file that exists
+         */
+        foreach ($possibleFilenameParts as $filenamePart) {
+            $filename = $domain . '.' . $filenamePart . '.' . $this->getFileType();
+            $filepath = $this->getDomainCatalogDirectory() . DIRECTORY_SEPARATOR . $filename;
+            if (file_exists($filepath)) {
+                return $filepath;
+            }
+        }
+        throw new NonExistentDomainCatalogFileException($domain, $locale);
     }
 
     /**
@@ -75,14 +122,8 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
      */
     public function loadCatalog(string $domain, string $locale): array
     {
-        $filepath = '';
-        $filepath .= $this->getDomainCatalogDirectory() . DIRECTORY_SEPARATOR;
-        $filepath .= $this->createCatalogFilenameFromDomainLocale($domain, $locale);
-
-        if (!file_exists($filepath)) {
-            throw new NonExistentDomainCatalogFileException($filepath);
-        }
-        return $this->parseDomainCatalogFile($filepath);
+        $catalogFilePath = $this->getCatalogFilePathFromDomainLocale($domain, $locale);
+        return $this->parseDomainCatalogFile($catalogFilePath);
     }
 
     /**

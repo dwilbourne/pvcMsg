@@ -16,8 +16,8 @@ use Throwable;
  */
 class NonExistentDomainCatalogFileException extends LogicException
 {
-    public function __construct(string $filename, Throwable $prev = null)
+    public function __construct(string $filename, string $locale, Throwable $prev = null)
     {
-        parent::__construct($filename, $prev);
+        parent::__construct($filename, $locale, $prev);
     }
 }

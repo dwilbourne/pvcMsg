@@ -72,8 +72,7 @@ class DomainCatalogFileLoaderPHPTest extends TestCase
     public function testBadFiles(string $domain): void
     {
         self::expectException(InvalidDomainCatalogFileException::class);
-        $filename = $this->loader->createCatalogFilenameFromDomainLocale($domain, $this->locale);
-        $filePath = $this->fixtureDir . $filename;
+        $filePath = $this->loader->getCatalogFilePathFromDomainLocale($domain, $this->locale);
         $foo = $this->loader->parseDomainCatalogFile($filePath);
         unset($foo);
     }

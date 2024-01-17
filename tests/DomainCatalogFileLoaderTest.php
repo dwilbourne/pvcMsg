@@ -47,12 +47,13 @@ class DomainCatalogFileLoaderTest extends TestCase
 
     public function setUp(): void
     {
-        $this->fixturePath = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
+        $this->fixturePath = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures';
         $this->fixtureFile = $this->fixturePath . 'messages.en.php';
         $this->domain = 'messages';
         $this->locale = 'en';
         $this->messages = $this->makeMessagesArray();
         $this->fileLoader = $this->getMockForAbstractClass(DomainCatalogFileLoader::class, [$this->fixturePath]);
+        $this->fileLoader->method('getFileType')->willReturn('php');
     }
 
     /**
@@ -72,21 +73,30 @@ class DomainCatalogFileLoaderTest extends TestCase
     }
 
     /**
-     * testSetDomainCatalogFilenameFilename
+     * testConstruct
      * @covers \pvc\msg\DomainCatalogFileLoader::__construct
+     */
+    public function testConstruct(): void
+    {
+        self::assertInstanceOf(DomainCatalogFileLoader::class, $this->fileLoader);
+    }
+
+    /**
+     * testSetDomainCatalogFilenameFilename
      * @covers \pvc\msg\DomainCatalogFileLoader::setDomainCatalogDirectory
      * @covers \pvc\msg\DomainCatalogFileLoader::getDomainCatalogDirectory
      */
     public function testConstructSetGetDomainCatalogDirectory(): void
     {
+        $this->fileLoader->setDomainCatalogDirectory($this->fixturePath);
         self::assertEquals($this->fixturePath, $this->fileLoader->getDomainCatalogDirectory());
     }
 
     /**
-     * testSetDomainCatalogFilenameThrowsExceptionOnNonExistentFile
+     * testSetDomainCatalogDirectoryThrowsExceptionOnNonExistentDirectory
      * @covers \pvc\msg\DomainCatalogFileLoader::setDomainCatalogDirectory
      */
-    public function testSetDomainCatalogFilenameThrowsExceptionOnNonExistentFile(): void
+    public function testSetDomainCatalogDirectoryThrowsExceptionOnNonExistentDirectory(): void
     {
         $badPath = '/noSuchDirectory';
         self::expectException(NonExistentDomainCatalogDirectoryException::class);
@@ -94,26 +104,38 @@ class DomainCatalogFileLoaderTest extends TestCase
     }
 
     /**
-     * testCreateCatalogFilenameFromDomainLocale
-     * @covers \pvc\msg\DomainCatalogFileLoader::createCatalogFilenameFromDomainLocale()
+     * testGetCatalogFilenameFromDomainLocale
+     * @dataProvider domainLocaleDataProvider
+     * @covers       \pvc\msg\DomainCatalogFileLoader::getCatalogFilePathFromDomainLocale()
+     * @covers       \pvc\msg\DomainCatalogFileLoader::getPossibleFilenamePartsFromLocale()
      */
-    public function testCreateCatalogFilenameFromDomainLocale(): void
-    {
-        $this->fileLoader->method('getFileType')->willReturn('php');
-        $expectedResult = 'messages.en.php';
+    public function testGetCatalogFilenameFromDomainLocale(
+        string $domain,
+        string $locale,
+        string $expectedResult,
+        string $comment
+    ): void {
+        $expectedResult = $this->fileLoader->getDomainCatalogDirectory() . DIRECTORY_SEPARATOR . $expectedResult;
         self::assertEquals(
             $expectedResult,
-            $this->fileLoader->createCatalogFilenameFromDomainLocale(
-                $this->domain,
-                $this->locale
-            )
+            $this->fileLoader->getCatalogFilePathFromDomainLocale($domain, $locale),
+            $comment
         );
+    }
+
+    public function domainLocaleDataProvider(): array
+    {
+        return [
+            ['messages', 'en_US', 'messages.en_US.php', 'failed to process en_US correctly'],
+            ['messages', 'en_CA', 'messages.en.php', 'failed to process en_CA correctly'],
+            ['messages', 'fr_FR', 'messages.en.php', 'failed to process fr_FR correctly'],
+        ];
     }
 
     /**
      * testLoadCatalogFailsIfFilenameDoesNotExist
      * @throws NonExistentDomainCatalogFileException
-     * @covers \pvc\msg\DomainCatalogFileLoader::loadCatalog
+     * @covers \pvc\msg\DomainCatalogFileLoader::getCatalogFilePathFromDomainLocale
      */
     public function testLoadCatalogFailsIfFilenameDoesNotExist(): void
     {
