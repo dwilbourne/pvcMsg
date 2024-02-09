@@ -8,22 +8,28 @@ declare(strict_types=1);
 
 namespace pvcTests\msg;
 
+use PHPUnit\Framework\TestCase;
+use pvc\config\AppConfig;
 use pvc\msg\DomainCatalogFileLoaderPHP;
 use pvc\msg\err\MissingLoaderConfigParameterException;
 use pvc\msg\err\UnknownLoaderTypeException;
 use pvc\msg\LoaderFactory;
-use PHPUnit\Framework\TestCase;
 
 class LoaderFactoryTest extends TestCase
 {
     protected LoaderFactory $loaderFactory;
 
-    protected string $dirNameFixture = __DIR__ . '/fixtures';
+    protected string $dirNameFixture = 'fixtures';
 
     protected array $parameters;
 
     public function setUp(): void
     {
+        /**
+         * for the purposes of testing, set the project root to the current directory.  The fixtures subdirectory is
+         * right below.
+         */
+        AppConfig::setProjectRoot(__DIR__);
         $this->loaderFactory = new LoaderFactory();
         $this->parameters = ['dirName' => $this->dirNameFixture];
     }
