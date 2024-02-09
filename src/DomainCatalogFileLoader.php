@@ -24,15 +24,6 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
     protected string $domainCatalogDirectory;
 
     /**
-     * @param string $dirname
-     * @throws NonExistentDomainCatalogDirectoryException
-     */
-    public function __construct(string $dirname)
-    {
-        $this->setDomainCatalogDirectory($dirname);
-    }
-
-    /**
      * setDomainCatalogDirectory
      * @param string $dirname
      * @throws NonExistentDomainCatalogDirectoryException
@@ -56,7 +47,7 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
     /**
      * getPossibleFilenamePartsFromLocale
      * @param string $locale
-     * @return array
+     * @return array<string>
      */
     protected function getPossibleFilenamePartsFromLocale(string $locale): array
     {

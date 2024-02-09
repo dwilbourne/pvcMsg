@@ -52,7 +52,8 @@ class DomainCatalogFileLoaderTest extends TestCase
         $this->domain = 'messages';
         $this->locale = 'en';
         $this->messages = $this->makeMessagesArray();
-        $this->fileLoader = $this->getMockForAbstractClass(DomainCatalogFileLoader::class, [$this->fixturePath]);
+        $this->fileLoader = $this->getMockForAbstractClass(DomainCatalogFileLoader::class);
+        $this->fileLoader->setDomainCatalogDirectory($this->fixturePath);
         $this->fileLoader->method('getFileType')->willReturn('php');
     }
 
@@ -70,15 +71,6 @@ class DomainCatalogFileLoaderTest extends TestCase
             $msgOneIndex => $msgOne,
             $msgTwoIndex => $msgTwo,
         ];
-    }
-
-    /**
-     * testConstruct
-     * @covers \pvc\msg\DomainCatalogFileLoader::__construct
-     */
-    public function testConstruct(): void
-    {
-        self::assertInstanceOf(DomainCatalogFileLoader::class, $this->fileLoader);
     }
 
     /**

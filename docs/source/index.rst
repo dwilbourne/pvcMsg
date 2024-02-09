@@ -10,7 +10,7 @@ pvcMsg Overview
 ===============
 
 The pvcMsg library is a lean implementation of ICU messaging. The primary purpose of the library is to support
-messaging in the pvc libraries themselves.  Pvc tries to minmize dependencies on 3rd party code as much as possible.
+messaging in the pvc libraries themselves.  Pvc tries to minimize dependencies on 3rd party code as much as possible.
 
 Like the message implementations in major frameworks, this implementation supports translation into various languages
 . And it uses the ICU library exposed by PHP to format numbers, currency and dates when those things appear inside
@@ -28,6 +28,9 @@ Design Points
 #############
 
 * extremely lightweight with no real dependencies outside of pvcInterfaces, pvcErr and the php intl extension.
+* extensible because third party code can add messages via the DomainCatalogRegistry class
+* all of the translation files for a particular domain must be in the same format (currently only php files which
+return an array via an include statement are supported - see the example)
 
 
 

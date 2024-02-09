@@ -35,7 +35,8 @@ class DomainCatalogFileLoaderPHPTest extends TestCase
     public function setUp(): void
     {
         $this->fixtureDir = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR;
-        $this->loader = new DomainCatalogFileLoaderPHP($this->fixtureDir);
+        $this->loader = new DomainCatalogFileLoaderPHP();
+        $this->loader->setDomainCatalogDirectory($this->fixtureDir);
         $this->locale = 'en';
     }
 

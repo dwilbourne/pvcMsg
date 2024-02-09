@@ -20,11 +20,14 @@ class _MsgXDataTest extends XDataTestMaster
      * testLibrary
      * @covers \pvc\msg\err\_MsgXData::getLocalXCodes
      * @covers \pvc\msg\err\_MsgXData::getXMessageTemplates
+     * @covers \pvc\msg\err\InvalidDomainException::__construct
      * @covers \pvc\msg\err\InvalidDomainCatalogFileException::__construct
      * @covers \pvc\msg\err\NonExistentDomainCatalogDirectoryException::__construct
      * @covers \pvc\msg\err\NonExistentDomainCatalogFileException::__construct
      * @covers \pvc\msg\err\NonExistentMessageException::__construct
      * @covers \pvc\msg\err\MsgIdNotSetException::__construct
+     * @covers \pvc\msg\err\UnknownLoaderTypeException::__construct
+     * @covers \pvc\msg\err\MissingLoaderConfigParameterException::__construct
      */
     public function testLibrary(): void
     {

@@ -54,7 +54,7 @@ class MsgTest extends TestCase
      */
     public function testSetGetMsgId(): void
     {
-        $this->msg->setContent($this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
     }
 
@@ -65,7 +65,7 @@ class MsgTest extends TestCase
      */
     public function testSetGetParameters(): void
     {
-        $this->msg->setContent($this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
         self::assertEquals($this->parameters, $this->msg->getParameters());
     }
 
@@ -91,27 +91,11 @@ class MsgTest extends TestCase
      */
     public function testSetMsgContent(): void
     {
-        $this->msg->setContent($this->msgId, $this->parameters, $this->domain);
+        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
         self::assertEquals($this->parameters, $this->msg->getParameters());
         self::assertEquals($this->domain, $this->msg->getDomain());
         self::assertTrue($this->msg->contentIsSet());
-    }
-
-    /**
-     * testSetMsgContentOptionalParameterArgument
-     * @covers \pvc\msg\Msg::setContent
-     */
-    public function testSetMsgContentOptionalParameterArgument(): void
-    {
-        $this->msg->setContent($this->msgId);
-        self::assertEquals($this->msgId, $this->msg->getMsgId());
-        self::assertIsArray($this->msg->getParameters());
-        self::assertEmpty($this->msg->getParameters());
-        /**
-         * verify null domain parameter does not reset the domain property to null
-         */
-        self::assertIsString($this->msg->getDomain());
     }
 
     /**
@@ -123,7 +107,7 @@ class MsgTest extends TestCase
     {
         self::assertFalse($this->msg->contentIsSet());
 
-        $this->msg->setContent($this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
         self::assertTrue($this->msg->contentIsSet());
 
         $this->msg->clearContent();

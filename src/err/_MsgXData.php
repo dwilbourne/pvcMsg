@@ -25,6 +25,9 @@ class _MsgXData extends XDataAbstract
             NonExistentMessageException::class => 1003,
             InvalidDomainCatalogFileException::class => 1004,
             MsgIdNotSetException::class => 1005,
+            UnknownLoaderTypeException::class => 1006,
+            MissingLoaderConfigParameterException::class => 1007,
+            InvalidDomainException::class => 1008,
         ];
     }
 
@@ -36,6 +39,9 @@ class _MsgXData extends XDataAbstract
             NonExistentMessageException::class => 'Catalog has no message that corresponds to msg id ${msgId}',
             InvalidDomainCatalogFileException::class => 'Domain catalog file was not parseable into an array<string, string>.',
             MsgIdNotSetException::class => 'Msg id not set',
+            UnknownLoaderTypeException::class => 'Error trying to create unknown loader type ${badLoaderType}',
+            MissingLoaderConfigParameterException::class => 'Missing loader config parameter \'${missingParamName}\'',
+            InvalidDomainException::class => 'Error trying to get config for unknown domain ${invalidDomain}',
         ];
     }
 }
