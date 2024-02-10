@@ -30,19 +30,11 @@ trait HasMsgTrait
     }
 
     /**
-     * unsetMsg
-     */
-    public function unsetMsg(): void
-    {
-        unset($this->msg);
-    }
-
-    /**
      * getMsg
-     * @return MsgInterface|null
+     * @return MsgInterface
      */
-    public function getMsg(): ?MsgInterface
+    public function getMsg(): MsgInterface
     {
-        return $this->msg ?? null;
+        return $this->msg;
     }
 }

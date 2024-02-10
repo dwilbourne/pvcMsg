@@ -21,7 +21,6 @@ class HasMsgTraitTest extends TestCase
     /**
      * testSetGetUnsetErrmsg
      * @covers \pvc\msg\HasMsgTrait::setMsg
-     * @covers \pvc\msg\HasMsgTrait::unsetMsg
      * @covers \pvc\msg\HasMsgTrait::getMsg
      */
     public function testHasMsgTrait(): void
@@ -29,10 +28,7 @@ class HasMsgTraitTest extends TestCase
         $mockTrait = $this->getMockForTrait(HasMsgTrait::class);
         $mockMsg = $this->createMock(MsgInterface::class);
 
-        self::assertNull($mockTrait->getMsg());
         $mockTrait->setMsg($mockMsg);
         self::assertEquals($mockMsg, $mockTrait->getMsg());
-        $mockTrait->unsetMsg();
-        self::assertNull($mockTrait->getMsg());
     }
 }
