@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace pvc\msg;
 
-use pvc\config\AppConfig;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
 use pvc\msg\err\MissingLoaderConfigParameterException;
 use pvc\msg\err\NonExistentDomainCatalogDirectoryException;
@@ -19,6 +18,18 @@ use pvc\msg\err\UnknownLoaderTypeException;
  */
 class LoaderFactory
 {
+    protected string $projectRoot;
+
+    public function setProjectRoot(string $projectRoot): void
+    {
+        $this->projectRoot = $projectRoot;
+    }
+
+    public function getProjectRoot(): string
+    {
+        return $this->projectRoot;
+    }
+
     /**
      * makeLoader
      * @param string $loaderType
@@ -47,7 +58,7 @@ class LoaderFactory
              * The DomainCatalogFileLoader class checks the validity of the directory before setting the value so no
              * need to do that here.
              */
-            $catalogDirectory = AppConfig::getProjectRoot() . DIRECTORY_SEPARATOR . $parameters[$dirName];
+            $catalogDirectory = $this->projectRoot . DIRECTORY_SEPARATOR . $parameters[$dirName];
             $loader->setDomainCatalogDirectory($catalogDirectory);
         }
         return $loader;

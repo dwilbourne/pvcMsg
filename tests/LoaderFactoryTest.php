@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace pvcTests\msg;
 
 use PHPUnit\Framework\TestCase;
-use pvc\config\AppConfig;
 use pvc\msg\DomainCatalogFileLoaderPHP;
 use pvc\msg\err\MissingLoaderConfigParameterException;
 use pvc\msg\err\UnknownLoaderTypeException;
@@ -25,13 +24,20 @@ class LoaderFactoryTest extends TestCase
 
     public function setUp(): void
     {
-        /**
-         * for the purposes of testing, set the project root to the current directory.  The fixtures subdirectory is
-         * right below.
-         */
-        AppConfig::setProjectRoot(__DIR__);
         $this->loaderFactory = new LoaderFactory();
         $this->parameters = ['dirName' => $this->dirNameFixture];
+    }
+
+    /**
+     * testSetGetProjectRoot
+     * @covers \pvc\msg\LoaderFactory::setProjectRoot
+     * @covers \pvc\msg\LoaderFactory::getProjectRoot
+     */
+    public function testSetGetProjectRoot(): void
+    {
+        $testRoot = __DIR__;
+        $this->loaderFactory->setProjectRoot($testRoot);
+        self::assertEquals($testRoot, $this->loaderFactory->getProjectRoot());
     }
 
     /**
@@ -70,6 +76,7 @@ class LoaderFactoryTest extends TestCase
      */
     public function testMakePhpLoader(): void
     {
+        $this->loaderFactory->setProjectRoot(__DIR__);
         $loader = $this->loaderFactory->makeLoader('php', $this->parameters);
         self::assertInstanceOf(DomainCatalogFileLoaderPHP::class, $loader);
     }
