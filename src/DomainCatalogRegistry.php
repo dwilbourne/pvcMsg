@@ -33,7 +33,12 @@ class DomainCatalogRegistry implements DomainCatalogRegistryInterface
         'parser' => [
             'loaderType' => 'php',
             'dirName' => 'vendor/pvc/parser/messages',
-        ]
+        ],
+
+        'frmtr' => [
+            'loaderType' => 'php',
+            'dirName' => 'vendor/pvc/frmtr/messages',
+        ],
     ];
 
     /**
