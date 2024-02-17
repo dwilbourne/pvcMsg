@@ -17,57 +17,63 @@ use pvc\msg\err\InvalidDomainException;
 class DomainCatalogRegistry implements DomainCatalogRegistryInterface
 {
     /**
-     * @var array<string, array<string, string>>
+     * @var array<string, array<string, array<string, string>|string>>
      */
-    protected static array $domainConfigs = [
+    protected array $domainConfigs = [
 
         /**
-         * directory names should be relative to the project root of the app, found in the pvcConfig\AppConfig
+         * directory names should be relative to the project root of the app
          */
 
         'validator' => [
             'loaderType' => 'php',
-            'dirName' => 'vendor/pvc/validator/messages',
+            'parameters' => [
+                'dirName' => 'vendor/pvc/validator/messages',
+            ],
         ],
 
         'parser' => [
             'loaderType' => 'php',
-            'dirName' => 'vendor/pvc/parser/messages',
+            'parameters' => [
+                'dirName' => 'vendor/pvc/parser/messages',
+            ],
         ],
 
         'frmtr' => [
             'loaderType' => 'php',
-            'dirName' => 'vendor/pvc/frmtr/messages',
+            'parameters' => [
+                'dirName' => 'vendor/pvc/frmtr/messages',
+            ],
         ],
     ];
 
     /**
      * getDomainConfig
      * @param string $domain
-     * @return array<string, string>
+     * @return array<string, array<string, string>|string>
      * @throws InvalidDomainException
      */
-    public static function getDomainCatalogConfig(string $domain): array
+    public function getDomainCatalogConfig(string $domain): array
     {
         if (!self::domainExists($domain)) {
             throw new InvalidDomainException($domain);
         }
-        return self::$domainConfigs[$domain];
+        return $this->domainConfigs[$domain];
     }
 
     /**
      * addDomainCatalogConfig
      * @param string $domain
-     * @param array<string, string> $parameters
+     * @param array<string, array<string>> $parameters
      * @param bool $overwrite
      * @return bool
      */
-    public static function addDomainCatalogConfig(string $domain, array $parameters, bool $overwrite = false): bool
+    public function addDomainCatalogConfig(string $domain, array $parameters, bool $overwrite = false): bool
     {
         if (self::domainExists($domain) && !$overwrite) {
             return false;
         }
-        self::$domainConfigs[$domain] = $parameters;
+        $this->domainConfigs[$domain] = $parameters;
         return true;
     }
 
@@ -76,8 +82,8 @@ class DomainCatalogRegistry implements DomainCatalogRegistryInterface
      * @param string $domain
      * @return bool
      */
-    public static function domainExists(string $domain): bool
+    public function domainExists(string $domain): bool
     {
-        return isset(self::$domainConfigs[$domain]);
+        return isset($this->domainConfigs[$domain]);
     }
 }

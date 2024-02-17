@@ -11,6 +11,8 @@ namespace pvcTests\msg;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
+use pvc\interfaces\msg\DomainCatalogRegistryInterface;
+use pvc\interfaces\msg\LoaderFactoryInterface;
 use pvc\msg\DomainCatalog;
 
 class DomainCatalogTest extends TestCase
@@ -20,7 +22,11 @@ class DomainCatalogTest extends TestCase
      */
     protected DomainCatalog $catalog;
 
+    protected LoaderFactoryInterface|MockObject $loaderFactory;
+
     protected DomainCatalogLoaderInterface|MockObject $loader;
+
+    protected DomainCatalogRegistryInterface|MockObject $registry;
 
     /**
      * @var string
@@ -67,8 +73,11 @@ class DomainCatalogTest extends TestCase
      */
     public function setUp(): void
     {
+        $this->registry = $this->createMock(DomainCatalogRegistryInterface::class);
+        $this->loaderFactory = $this->createMock(LoaderFactoryInterface::class);
         $this->loader = $this->createMock(DomainCatalogLoaderInterface::class);
-        $this->catalog = new DomainCatalog($this->loader);
+
+        $this->catalog = new DomainCatalog($this->loaderFactory, $this->registry);
 
         $this->testDomain = 'testDomain';
         $this->testLocale = 'testLocale';
@@ -84,13 +93,23 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testSetGetLoader
-     * @covers \pvc\msg\DomainCatalog::setLoader
-     * @covers \pvc\msg\DomainCatalog::getLoader
+     * @covers \pvc\msg\DomainCatalog::setLoaderFactory
+     * @covers \pvc\msg\DomainCatalog::getLoaderFactory
      * @covers \pvc\msg\DomainCatalog::__construct
      */
-    public function testSetGetLoader(): void
+    public function testSetGetLoaderfactory(): void
     {
-        self::assertEquals($this->loader, $this->catalog->getLoader());
+        self::assertEquals($this->loaderFactory, $this->catalog->getLoaderFactory());
+    }
+
+    /**
+     * testSetGetRegistry
+     * @covers \pvc\msg\DomainCatalog::getRegistry
+     * @covers \pvc\msg\DomainCatalog::setRegistry
+     */
+    public function testSetGetRegistry(): void
+    {
+        self::assertEquals($this->registry, $this->catalog->getRegistry());
     }
 
     /**
@@ -107,6 +126,33 @@ class DomainCatalogTest extends TestCase
     }
 
     /**
+     * loadCatalogWithConfiguredMocks
+     * @throws \pvc\msg\err\InvalidDomainException
+     */
+    protected function loadCatalogWithConfiguredMocks(): void
+    {
+        $loadertype = 'someLoaderType';
+        $parameters = [];
+
+        $this->registry
+            ->method('getDomainCatalogConfig')
+            ->with($this->testDomain)
+            ->willReturn(['loaderType' => $loadertype, 'parameters' => $parameters]);
+
+        $this->loaderFactory
+            ->method('makeLoader')
+            ->with($loadertype, $parameters)
+            ->willReturn($this->loader);
+
+        $this->loader
+            ->method('loadCatalog')
+            ->with($this->testDomain, $this->testLocale)
+            ->willReturn($this->testMessages);
+
+        $this->catalog->load($this->testDomain, $this->testLocale);
+    }
+
+    /**
      * testLoaderLoadMethodSetsDomainLocaleAndMessagesUponSuccess
      * @covers \pvc\msg\DomainCatalog::load
      * @covers \pvc\msg\DomainCatalog::getDomain
@@ -115,12 +161,7 @@ class DomainCatalogTest extends TestCase
      */
     public function testLoaderLoadMethodSetsDomainLocaleAndMessagesUponSuccess(): void
     {
-        $this->loader
-            ->method('loadCatalog')
-            ->with($this->testDomain, $this->testLocale)
-            ->willReturn($this->testMessages);
-        $this->catalog->load($this->testDomain, $this->testLocale);
-
+        $this->loadCatalogWithConfiguredMocks();
         self::assertEquals($this->testDomain, $this->catalog->getDomain());
         self::assertEquals($this->testLocale, $this->catalog->getLocale());
         self::assertEquals($this->testMessages, $this->catalog->getMessages());
@@ -132,11 +173,10 @@ class DomainCatalogTest extends TestCase
      */
     public function testLoaderDoesNotReloadMessagesThatAreAlreadyLoaded(): void
     {
-        $this->loader
-            ->method('loadCatalog')
-            ->with($this->testDomain, $this->testLocale)
-            ->willReturn($this->testMessages);
-        $this->catalog->load($this->testDomain, $this->testLocale);
+        $this->loadCatalogWithConfiguredMocks();
+
+        $this->registry->expects($this->never())->method('getDomainCatalogConfig');
+        $this->loaderFactory->expects($this->never())->method('makeLoader');
         $this->loader->expects($this->never())->method('loadCatalog');
         $this->catalog->load($this->testDomain, $this->testLocale);
     }
@@ -147,6 +187,7 @@ class DomainCatalogTest extends TestCase
      */
     public function testGetMessageReturnsNullIfItDoesNotExistInCatalog(): void
     {
+        $this->loadCatalogWithConfiguredMocks();
         $msgId = 'foobar';
         self::assertNull($this->catalog->getMessage($msgId));
     }
@@ -157,12 +198,7 @@ class DomainCatalogTest extends TestCase
      */
     public function testGetMessage(): void
     {
-        $this->loader
-            ->method('loadCatalog')
-            ->with($this->testDomain, $this->testLocale)
-            ->willReturn($this->testMessages);
-        $this->catalog->load($this->testDomain, $this->testLocale);
-
+        $this->loadCatalogWithConfiguredMocks();
         self::assertEquals($this->msgOne, $this->catalog->getMessage($this->msgOneIndex));
     }
 
@@ -173,11 +209,7 @@ class DomainCatalogTest extends TestCase
     public function testIsLoadedWithEmptyArgs(): void
     {
         self::assertFalse($this->catalog->isLoaded());
-        $this->loader
-            ->method('loadCatalog')
-            ->with($this->testDomain, $this->testLocale)
-            ->willReturn($this->testMessages);
-        $this->catalog->load($this->testDomain, $this->testLocale);
+        $this->loadCatalogWithConfiguredMocks();
         self::assertTrue($this->catalog->isLoaded());
     }
 
@@ -187,11 +219,7 @@ class DomainCatalogTest extends TestCase
      */
     public function testIsLoadedWithPopulatedArgs(): void
     {
-        $this->loader
-            ->method('loadCatalog')
-            ->with($this->testDomain, $this->testLocale)
-            ->willReturn($this->testMessages);
-        $this->catalog->load($this->testDomain, $this->testLocale);
+        $this->loadCatalogWithConfiguredMocks();
         self::assertFalse($this->catalog->isLoaded('foo', 'bar'));
         self::assertTrue($this->catalog->isLoaded($this->testDomain, $this->testLocale));
     }

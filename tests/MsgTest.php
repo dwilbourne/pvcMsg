@@ -71,17 +71,12 @@ class MsgTest extends TestCase
 
     /**
      * testSetGetDomain
-     * @covers \pvc\msg\Msg::setDomain
+     * @covers \pvc\msg\Msg::setContent
      * @covers \pvc\msg\Msg::getDomain
      */
     public function testSetGetDomain(): void
     {
-        /**
-         * verify there is a default domain set
-         */
-        self::assertIsString($this->msg->getDomain());
-
-        $this->msg->setDomain($this->domain);
+        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
         self::assertEquals($this->domain, $this->msg->getDomain());
     }
 
@@ -113,6 +108,8 @@ class MsgTest extends TestCase
         $this->msg->clearContent();
         self::assertNull($this->msg->getMsgId());
         self::assertEmpty($this->msg->getParameters());
+        self::assertFalse($this->msg->contentIsSet());
+
         self::assertFalse($this->msg->contentIsSet());
     }
 }

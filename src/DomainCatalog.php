@@ -9,7 +9,9 @@ declare(strict_types=1);
 namespace pvc\msg;
 
 use pvc\interfaces\msg\DomainCatalogInterface;
-use pvc\interfaces\msg\DomainCatalogLoaderInterface;
+use pvc\interfaces\msg\DomainCatalogRegistryInterface;
+use pvc\interfaces\msg\LoaderFactoryInterface;
+use pvc\msg\err\InvalidDomainException;
 
 /**
  * Class DomainCatalog
@@ -31,37 +33,48 @@ class DomainCatalog implements DomainCatalogInterface
      */
     protected array $messages;
 
-    /**
-     * @var DomainCatalogLoaderInterface
-     */
-    protected DomainCatalogLoaderInterface $loader;
+    protected LoaderFactoryInterface $loaderFactory;
+
+    protected DomainCatalogRegistryInterface $registry;
 
     /**
-     * @param DomainCatalogLoaderInterface $loader
+     * @param LoaderFactoryInterface $loaderFactory
      */
-    public function __construct(DomainCatalogLoaderInterface $loader)
+    public function __construct(LoaderFactoryInterface $loaderFactory, DomainCatalogRegistryInterface $registry)
     {
-        $this->setLoader($loader);
+        $this->setLoaderFactory($loaderFactory);
+        $this->setRegistry($registry);
+    }
+
+    public function getLoaderFactory(): LoaderFactoryInterface
+    {
+        return $this->loaderFactory;
+    }
+
+    public function setLoaderFactory(LoaderFactoryInterface $loaderFactory): void
+    {
+        $this->loaderFactory = $loaderFactory;
     }
 
     /**
-     * @return DomainCatalogLoaderInterface
+     * @return DomainCatalogRegistryInterface
      */
-    public function getLoader(): DomainCatalogLoaderInterface
+    public function getRegistry(): DomainCatalogRegistryInterface
     {
-        return $this->loader;
+        return $this->registry;
     }
 
     /**
-     * @param DomainCatalogLoaderInterface $loader
+     * @param DomainCatalogRegistryInterface $registry
      */
-    public function setLoader(DomainCatalogLoaderInterface $loader): void
+    public function setRegistry(DomainCatalogRegistryInterface $registry): void
     {
-        $this->loader = $loader;
+        $this->registry = $registry;
     }
 
     /**
      * load
+     * @throws InvalidDomainException
      */
     public function load(string $domain, string $locale): void
     {
@@ -72,7 +85,13 @@ class DomainCatalog implements DomainCatalogInterface
             return;
         }
 
-        $this->messages = $this->loader->loadCatalog($domain, $locale);
+        $registryEntry = $this->registry->getDomainCatalogConfig($domain);
+        /** @var string $loaderType */
+        $loaderType = $registryEntry['loaderType'];
+        /** @var array<string, string> $parameters */
+        $parameters = $registryEntry['parameters'];
+        $loader = $this->loaderFactory->makeLoader($loaderType, $parameters);
+        $this->messages = $loader->loadCatalog($domain, $locale);
         $this->domain = $domain;
         $this->locale = $locale;
     }

@@ -9,11 +9,18 @@ declare(strict_types=1);
 namespace pvcTests\msg;
 
 use PHPUnit\Framework\TestCase;
-use pvc\msg\err\InvalidDomainException;
 use pvc\msg\DomainCatalogRegistry;
+use pvc\msg\err\InvalidDomainException;
 
 class DomainCatalogRegistryTest extends TestCase
 {
+    protected DomainCatalogRegistry $registry;
+
+    public function setUp(): void
+    {
+        $this->registry = new DomainCatalogRegistry();
+    }
+
     /**
      * testGetDomainCatalogConfigThrowsExceptionForNonExistentDomain
      * @throws InvalidDomainException
@@ -22,7 +29,7 @@ class DomainCatalogRegistryTest extends TestCase
     public function testGetDomainCatalogConfigThrowsExceptionForNonExistentDomain(): void
     {
         self::expectException(InvalidDomainException::class);
-        DomainCatalogRegistry::getDomainCatalogConfig('foo');
+        $this->registry->getDomainCatalogConfig('foo');
     }
 
     /**
@@ -33,7 +40,7 @@ class DomainCatalogRegistryTest extends TestCase
     public function testGetDomainCatalogConfigReturnsArray(): void
     {
         $testDomain = 'validator';
-        self::assertIsArray(DomainCatalogRegistry::getDomainCatalogConfig($testDomain));
+        self::assertIsArray($this->registry->getDomainCatalogConfig($testDomain));
     }
 
     /**
@@ -46,8 +53,8 @@ class DomainCatalogRegistryTest extends TestCase
     {
         $testDomain = 'foo';
         $testParameters = ['bar' => 'baz', 'quux' => 'quap'];
-        self::assertTrue(DomainCatalogRegistry::addDomainCatalogConfig($testDomain, $testParameters));
-        self::assertEquals($testParameters, DomainCatalogRegistry::getDomainCatalogConfig($testDomain));
+        self::assertTrue($this->registry->addDomainCatalogConfig($testDomain, $testParameters));
+        self::assertEquals($testParameters, $this->registry->getDomainCatalogConfig($testDomain));
     }
 
     /**
@@ -59,10 +66,10 @@ class DomainCatalogRegistryTest extends TestCase
     {
         $testDomain = 'validator';
         $overwrite = false;
-        $oldParams = DomainCatalogRegistry::getDomainCatalogConfig($testDomain);
+        $oldParams = $this->registry->getDomainCatalogConfig($testDomain);
         $newParams = ['bar' => 'baz', 'quux' => 'quap'];
-        self::assertFalse(DomainCatalogRegistry::addDomainCatalogConfig($testDomain, $newParams, $overwrite));
-        self::assertEquals($oldParams, DomainCatalogRegistry::getDomainCatalogConfig($testDomain));
+        self::assertFalse($this->registry->addDomainCatalogConfig($testDomain, $newParams, $overwrite));
+        self::assertEquals($oldParams, $this->registry->getDomainCatalogConfig($testDomain));
     }
 
     /**
@@ -75,8 +82,8 @@ class DomainCatalogRegistryTest extends TestCase
         $testDomain = 'validator';
         $overwrite = true;
         $newParams = ['bar' => 'baz', 'quux' => 'quap'];
-        self::assertTrue(DomainCatalogRegistry::addDomainCatalogConfig($testDomain, $newParams, $overwrite));
-        self::assertEquals($newParams, DomainCatalogRegistry::getDomainCatalogConfig($testDomain));
+        self::assertTrue($this->registry->addDomainCatalogConfig($testDomain, $newParams, $overwrite));
+        self::assertEquals($newParams, $this->registry->getDomainCatalogConfig($testDomain));
     }
 
     /**
@@ -87,10 +94,10 @@ class DomainCatalogRegistryTest extends TestCase
     public function testAddGetConfigOverwriteDefaultsToFalse(): void
     {
         $testDomain = 'validator';
-        $oldParams = DomainCatalogRegistry::getDomainCatalogConfig($testDomain);
+        $oldParams = $this->registry->getDomainCatalogConfig($testDomain);
         $newParams = ['bar' => 'five', 'quux' => 'seven'];
-        self::assertFalse(DomainCatalogRegistry::addDomainCatalogConfig($testDomain, $newParams));
-        self::assertEquals($oldParams, DomainCatalogRegistry::getDomainCatalogConfig($testDomain));
+        self::assertFalse($this->registry->addDomainCatalogConfig($testDomain, $newParams));
+        self::assertEquals($oldParams, $this->registry->getDomainCatalogConfig($testDomain));
     }
 
     /**
@@ -100,12 +107,12 @@ class DomainCatalogRegistryTest extends TestCase
     public function testDomainExists(): void
     {
         $testDomain = 'validator';
-        self::assertTrue(DomainCatalogRegistry::domainExists($testDomain));
+        self::assertTrue($this->registry->domainExists($testDomain));
         /**
          * note that because the domainConfigs array is static, we cannot add 'foo' a second time, even though this
          * is a new test ('foo' was added in line 49 in this test suite).  The static array persists between tests.
          */
         $testDomain = 'bar';
-        self::assertFalse(DomainCatalogRegistry::domainExists($testDomain));
+        self::assertFalse($this->registry->domainExists($testDomain));
     }
 }

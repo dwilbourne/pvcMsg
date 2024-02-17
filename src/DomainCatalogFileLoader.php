@@ -120,7 +120,7 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
     /**
      * getFileType
      * @return string
-     * returns the file extension (type) that this loader can parse and load
+     * returns the file extension (type) that this loaderFactory can parse and load
      */
     abstract public function getFileType(): string;
 

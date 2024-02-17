@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace pvc\msg;
 
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
+use pvc\interfaces\msg\LoaderFactoryInterface;
 use pvc\msg\err\MissingLoaderConfigParameterException;
 use pvc\msg\err\NonExistentDomainCatalogDirectoryException;
 use pvc\msg\err\UnknownLoaderTypeException;
@@ -16,13 +17,13 @@ use pvc\msg\err\UnknownLoaderTypeException;
 /**
  * Class LoaderFactory
  */
-class LoaderFactory
+class LoaderFactory implements LoaderFactoryInterface
 {
     protected string $projectRoot;
 
-    public function setProjectRoot(string $projectRoot): void
+    public function setProjectRoot(string $root): void
     {
-        $this->projectRoot = $projectRoot;
+        $this->projectRoot = $root;
     }
 
     public function getProjectRoot(): string
@@ -33,7 +34,7 @@ class LoaderFactory
     /**
      * makeLoader
      * @param string $loaderType
-     * @param array<string, string> $parameters
+     * @param array<string, string[]> $parameters
      * @return DomainCatalogLoaderInterface
      * @throws MissingLoaderConfigParameterException
      * @throws NonExistentDomainCatalogDirectoryException
@@ -50,15 +51,17 @@ class LoaderFactory
         }
 
         if ($loader instanceof DomainCatalogFileLoader) {
-            $dirName = 'dirName';
-            if (!isset($parameters[$dirName])) {
-                throw new MissingLoaderConfigParameterException($dirName);
+            if (!isset($parameters['dirName'])) {
+                throw new MissingLoaderConfigParameterException('dirName');
+            } else {
+                /** @var string $dirName */
+                $dirName = $parameters['dirName'];
             }
             /**
              * The DomainCatalogFileLoader class checks the validity of the directory before setting the value so no
              * need to do that here.
              */
-            $catalogDirectory = $this->projectRoot . DIRECTORY_SEPARATOR . $parameters[$dirName];
+            $catalogDirectory = $this->projectRoot . DIRECTORY_SEPARATOR . $dirName;
             $loader->setDomainCatalogDirectory($catalogDirectory);
         }
         return $loader;

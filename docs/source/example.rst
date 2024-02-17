@@ -24,14 +24,14 @@ The convention for naming such a message catalog file is <domain>.<locale>.<file
 these messages is something spectacularly uncreative, such as 'messages'.  Thus, the filename for this message catalog
 would be 'messages.en.php'.
 
-The next step is to instantiate a DomainCatalog object.  That object requires a loader, which is responsible for the
+The next step is to instantiate a DomainCatalog object.  That object requires a loaderFactory, which is responsible for the
 mechanics of retrieving the messages from the repository and stuffing them into the DomainCatalog object via its
 'load' method.  Then, we can create a MsgFrmtr object, which is created with the DomainCatalog object as its
 argument, like so::
 
             $messagesDirectory = 'path/to/some/messagesFiles/';
-            $loader = new DomainCatalogFileLoaderPHP($messagesDirectory);
-            $domainCatalog = new DomainCatalog($loader);
+            $loaderFactory = new DomainCatalogFileLoaderPHP($messagesDirectory);
+            $domainCatalog = new DomainCatalog($loaderFactory);
             $domainCatalog->load($domain, $locale);
             $frmtr = new MsgFrmtr($domainCatalog);
 
@@ -51,12 +51,12 @@ In this case, the code would look like this::
             $domain = 'messages';
             $testMsgId = 'invitation_title';
             $parameters = ['organizer_gender' => 'female', 'organizer_name' => 'Jane'];
-            $msg = new Msg($testMsgId, $parameters, $domain);
+            $value = new Msg($testMsgId, $parameters, $domain);
 
 The way to produce the formatted output is by calling the 'format' method on the formatter with the Msg object as its
 parameter.  Like so::
 
-            $frmtr->format($msg);
+            $frmtr->format($value);
 
 This produces 'Jane has invited you to her party!'.
 
