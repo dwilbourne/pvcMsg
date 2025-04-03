@@ -13,7 +13,7 @@ use pvc\msg\err\InvalidDomainCatalogFileException;
 /**
  * Class CatalogFileLoader
  */
-class DomainCatalogFileLoaderPHP extends DomainCatalogFileLoader
+class DomainCatalogFileLoaderPhp extends DomainCatalogFileLoader
 {
     /**
      * getFileType
@@ -24,6 +24,11 @@ class DomainCatalogFileLoaderPHP extends DomainCatalogFileLoader
         return 'php';
     }
 
+    /**
+     * @param string $filepath
+     * @return array<string, string>
+     * @throws InvalidDomainCatalogFileException
+     */
     public function parseDomainCatalogFile(string $filepath): array
     {
         /**
@@ -43,7 +48,7 @@ class DomainCatalogFileLoaderPHP extends DomainCatalogFileLoader
                 throw new InvalidDomainCatalogFileException();
             }
         }
-
+        /** @var array<string, string> $messages */
         return $messages;
     }
 }

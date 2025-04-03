@@ -24,8 +24,8 @@ class _MsgXDataTest extends XDataTestMaster
      * @covers \pvc\msg\err\InvalidDomainCatalogFileException::__construct
      * @covers \pvc\msg\err\NonExistentDomainCatalogDirectoryException::__construct
      * @covers \pvc\msg\err\NonExistentDomainCatalogFileException::__construct
-     * @covers \pvc\msg\err\NonExistentMessageException::__construct
-     * @covers \pvc\msg\err\MsgContentNotSetException::__construct
+     * @covers \pvc\frmtr\err\NonExistentMessageException::__construct
+     * @covers \pvc\frmtr\err\MsgContentNotSetException::__construct
      * @covers \pvc\msg\err\UnknownLoaderTypeException::__construct
      * @covers \pvc\msg\err\MissingLoaderConfigParameterException::__construct
      */

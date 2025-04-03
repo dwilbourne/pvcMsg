@@ -9,11 +9,11 @@ declare(strict_types=1);
 namespace pvcExamples\msg;
 
 use PHPUnit\Framework\TestCase;
+use pvc\frmtr\msg\MsgFrmtr;
+use pvc\intl\Locale;
 use pvc\msg\DomainCatalog;
-use pvc\msg\DomainCatalogFileLoaderPHP;
 use pvc\msg\err\NonExistentDomainCatalogFileException;
 use pvc\msg\Msg;
-use pvc\msg\MsgFrmtr;
 
 class MsgTest extends TestCase
 {
@@ -61,15 +61,20 @@ class MsgTest extends TestCase
      * testFormatting
      * @throws NonExistentDomainCatalogFileException
      * @dataProvider getMsgData
-     * @covers       \pvc\msg\MsgFrmtr::format
+     * @covers       \pvc\frmtr\msg\MsgFrmtr::format
      */
-    public function testFormatting(string $locale, string $expectedResult): void
+    public function testFormatting(string $localeString, string $expectedResult): void
     {
-        $msg = new Msg($this->testMsgId, $this->parameters, $this->domain);
-        $loader = new DomainCatalogFileLoaderPHP($this->messagesDir);
+        $msg = new Msg();
+        $msg->setContent($this->domain, $this->testMsgId, $this->parameters);
+
+        $loader = new ExampleCatalogLoader();
         $domainCatalog = new DomainCatalog($loader);
-        $domainCatalog->load($this->domain, $locale);
-        $frmtr = new MsgFrmtr($domainCatalog);
+        $domainCatalog->load($this->domain, $localeString);
+
+        $locale = new Locale();
+        $locale->setLocaleString($localeString);
+        $frmtr = new MsgFrmtr($domainCatalog, $locale);
         self::assertEquals($expectedResult, $frmtr->format($msg));
     }
 }

@@ -11,8 +11,6 @@ namespace pvcTests\msg;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
-use pvc\interfaces\msg\DomainCatalogRegistryInterface;
-use pvc\interfaces\msg\LoaderFactoryInterface;
 use pvc\msg\DomainCatalog;
 
 class DomainCatalogTest extends TestCase
@@ -22,11 +20,7 @@ class DomainCatalogTest extends TestCase
      */
     protected DomainCatalog $catalog;
 
-    protected LoaderFactoryInterface|MockObject $loaderFactory;
-
     protected DomainCatalogLoaderInterface|MockObject $loader;
-
-    protected DomainCatalogRegistryInterface|MockObject $registry;
 
     /**
      * @var string
@@ -73,11 +67,9 @@ class DomainCatalogTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->registry = $this->createMock(DomainCatalogRegistryInterface::class);
-        $this->loaderFactory = $this->createMock(LoaderFactoryInterface::class);
         $this->loader = $this->createMock(DomainCatalogLoaderInterface::class);
 
-        $this->catalog = new DomainCatalog($this->loaderFactory, $this->registry);
+        $this->catalog = new DomainCatalog($this->loader);
 
         $this->testDomain = 'testDomain';
         $this->testLocale = 'testLocale';
@@ -92,24 +84,12 @@ class DomainCatalogTest extends TestCase
     }
 
     /**
-     * testSetGetLoader
-     * @covers \pvc\msg\DomainCatalog::setLoaderFactory
-     * @covers \pvc\msg\DomainCatalog::getLoaderFactory
+     * @return void
      * @covers \pvc\msg\DomainCatalog::__construct
      */
-    public function testSetGetLoaderfactory(): void
+    public function testConstruct(): void
     {
-        self::assertEquals($this->loaderFactory, $this->catalog->getLoaderFactory());
-    }
-
-    /**
-     * testSetGetRegistry
-     * @covers \pvc\msg\DomainCatalog::getRegistry
-     * @covers \pvc\msg\DomainCatalog::setRegistry
-     */
-    public function testSetGetRegistry(): void
-    {
-        self::assertEquals($this->registry, $this->catalog->getRegistry());
+        self::assertInstanceOf(DomainCatalog::class, $this->catalog);
     }
 
     /**
@@ -131,19 +111,6 @@ class DomainCatalogTest extends TestCase
      */
     protected function loadCatalogWithConfiguredMocks(): void
     {
-        $loadertype = 'someLoaderType';
-        $parameters = [];
-
-        $this->registry
-            ->method('getDomainCatalogConfig')
-            ->with($this->testDomain)
-            ->willReturn(['loaderType' => $loadertype, 'parameters' => $parameters]);
-
-        $this->loaderFactory
-            ->method('makeLoader')
-            ->with($loadertype, $parameters)
-            ->willReturn($this->loader);
-
         $this->loader
             ->method('loadCatalog')
             ->with($this->testDomain, $this->testLocale)
@@ -174,9 +141,6 @@ class DomainCatalogTest extends TestCase
     public function testLoaderDoesNotReloadMessagesThatAreAlreadyLoaded(): void
     {
         $this->loadCatalogWithConfiguredMocks();
-
-        $this->registry->expects($this->never())->method('getDomainCatalogConfig');
-        $this->loaderFactory->expects($this->never())->method('makeLoader');
         $this->loader->expects($this->never())->method('loadCatalog');
         $this->catalog->load($this->testDomain, $this->testLocale);
     }

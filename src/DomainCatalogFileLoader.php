@@ -68,12 +68,16 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
                                         Locale::getScript($locale),
                                         Locale::getRegion($locale)
                                     ]);
+        /** @var array<string> $result */
+        $result = [];
         while (count($localeArray) > 0) {
             $result[] = implode('_', $localeArray);
             array_pop($localeArray);
         }
-        $result[] = 'en';
-        return array_unique($result);
+        if (!in_array('en', $result)) {
+            $result[] = 'en';
+        }
+        return $result;
     }
 
     /**

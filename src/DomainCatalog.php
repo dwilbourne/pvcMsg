@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace pvc\msg;
 
 use pvc\interfaces\msg\DomainCatalogInterface;
-use pvc\interfaces\msg\DomainCatalogRegistryInterface;
+use pvc\interfaces\msg\DomainCatalogLoaderInterface;
 use pvc\interfaces\msg\LoaderFactoryInterface;
 use pvc\msg\err\InvalidDomainException;
 
@@ -33,43 +33,11 @@ class DomainCatalog implements DomainCatalogInterface
      */
     protected array $messages;
 
-    protected LoaderFactoryInterface $loaderFactory;
-
-    protected DomainCatalogRegistryInterface $registry;
-
     /**
-     * @param LoaderFactoryInterface $loaderFactory
+     * @param DomainCatalogLoaderInterface $loader
      */
-    public function __construct(LoaderFactoryInterface $loaderFactory, DomainCatalogRegistryInterface $registry)
+    public function __construct(protected DomainCatalogLoaderInterface $loader)
     {
-        $this->setLoaderFactory($loaderFactory);
-        $this->setRegistry($registry);
-    }
-
-    public function getLoaderFactory(): LoaderFactoryInterface
-    {
-        return $this->loaderFactory;
-    }
-
-    public function setLoaderFactory(LoaderFactoryInterface $loaderFactory): void
-    {
-        $this->loaderFactory = $loaderFactory;
-    }
-
-    /**
-     * @return DomainCatalogRegistryInterface
-     */
-    public function getRegistry(): DomainCatalogRegistryInterface
-    {
-        return $this->registry;
-    }
-
-    /**
-     * @param DomainCatalogRegistryInterface $registry
-     */
-    public function setRegistry(DomainCatalogRegistryInterface $registry): void
-    {
-        $this->registry = $registry;
     }
 
     /**
@@ -85,13 +53,7 @@ class DomainCatalog implements DomainCatalogInterface
             return;
         }
 
-        $registryEntry = $this->registry->getDomainCatalogConfig($domain);
-        /** @var string $loaderType */
-        $loaderType = $registryEntry['loaderType'];
-        /** @var array<string, string> $parameters */
-        $parameters = $registryEntry['parameters'];
-        $loader = $this->loaderFactory->makeLoader($loaderType, $parameters);
-        $this->messages = $loader->loadCatalog($domain, $locale);
+        $this->messages = $this->loader->loadCatalog($domain, $locale);
         $this->domain = $domain;
         $this->locale = $locale;
     }
