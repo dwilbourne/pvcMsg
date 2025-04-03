@@ -35,17 +35,17 @@ class Msg implements MsgInterface
     protected array $parameters;
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getMsgId(): ?string
+    public function getMsgId(): string
     {
-        return $this->msgId ?? null;
+        return $this->msgId;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getDomain(): ?string
+    public function getDomain(): string
     {
         return $this->domain;
     }
@@ -59,7 +59,8 @@ class Msg implements MsgInterface
     }
 
     /**
-     * @param string $msgId
+     * @param non-empty-string $domain
+     * @param non-empty-string $msgId
      * @param mixed[] $parameters
      */
     public function setContent(string $domain, string $msgId, array $parameters = []): void

@@ -105,6 +105,9 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
                 return $filepath;
             }
         }
+        /**
+         * throw an exception if we were not able to find any files that match the domain / locale.
+         */
         throw new NonExistentDomainCatalogFileException($domain, $locale);
     }
 

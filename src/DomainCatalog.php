@@ -10,7 +10,6 @@ namespace pvc\msg;
 
 use pvc\interfaces\msg\DomainCatalogInterface;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
-use pvc\interfaces\msg\LoaderFactoryInterface;
 use pvc\msg\err\InvalidDomainException;
 
 /**
@@ -95,16 +94,23 @@ class DomainCatalog implements DomainCatalogInterface
         return $this->messages[$messageId] ?? null;
     }
 
-    public function isLoaded(string $domain = '', string $locale = ''): bool
+    protected function isLoaded(string $domain = '', string $locale = ''): bool
     {
+        /**
+         * recall that domain and locale are set simultaneously via the load method, so either both properties are
+         * empty or they are both set.
+         */
+
         /**
          * if both arguments are empty, then indicate whether the catalog is populated with anything at all
          */
         if ($domain == '' && $locale == '') {
             return ($this->getDomain() && $this->getLocale());
         }
+
         /**
-         * if either are set, then check to see if the catalog is loaded with the arguments specified
+         *
+         * if domain and locale are set, then check to see if the catalog is loaded with the arguments specified.
          */
         return ($domain == $this->getDomain() && $locale == $this->getLocale());
     }
