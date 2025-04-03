@@ -121,6 +121,7 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testLoaderLoadMethodSetsDomainLocaleAndMessagesUponSuccess
+     * @covers \pvc\msg\DomainCatalog::isLoaded
      * @covers \pvc\msg\DomainCatalog::load
      * @covers \pvc\msg\DomainCatalog::getDomain
      * @covers \pvc\msg\DomainCatalog::getLocale
@@ -136,6 +137,7 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testLoaderDoesNotReloadMessagesThatAreAlreadyLoaded
+     * @covers \pvc\msg\DomainCatalog::isLoaded
      * @covers \pvc\msg\DomainCatalog::load
      */
     public function testLoaderDoesNotReloadMessagesThatAreAlreadyLoaded(): void
@@ -164,27 +166,5 @@ class DomainCatalogTest extends TestCase
     {
         $this->loadCatalogWithConfiguredMocks();
         self::assertEquals($this->msgOne, $this->catalog->getMessage($this->msgOneIndex));
-    }
-
-    /**
-     * testIsLoadedWithEmptyArgs
-     * @covers \pvc\msg\DomainCatalog::isLoaded
-     */
-    public function testIsLoadedWithEmptyArgs(): void
-    {
-        self::assertFalse($this->catalog->isLoaded());
-        $this->loadCatalogWithConfiguredMocks();
-        self::assertTrue($this->catalog->isLoaded());
-    }
-
-    /**
-     * testIsLoadedWithPopulatedArgs
-     * @covers \pvc\msg\DomainCatalog::isLoaded
-     */
-    public function testIsLoadedWithPopulatedArgs(): void
-    {
-        $this->loadCatalogWithConfiguredMocks();
-        self::assertFalse($this->catalog->isLoaded('foo', 'bar'));
-        self::assertTrue($this->catalog->isLoaded($this->testDomain, $this->testLocale));
     }
 }

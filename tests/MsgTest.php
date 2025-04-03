@@ -106,9 +106,10 @@ class MsgTest extends TestCase
         self::assertTrue($this->msg->contentIsSet());
 
         $this->msg->clearContent();
-        self::assertNull($this->msg->getMsgId());
+        /**
+         * trying to get either msgId or domain would produce an error
+         */
         self::assertEmpty($this->msg->getParameters());
-        self::assertFalse($this->msg->contentIsSet());
 
         self::assertFalse($this->msg->contentIsSet());
     }
