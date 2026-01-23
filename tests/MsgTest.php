@@ -10,10 +10,12 @@ namespace pvcTests\msg;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;
+use pvc\interfaces\msg\MsgInterface;
 use pvc\msg\Msg;
 
 /**
  * Class MsgTest
+ * @phpstan-import-type MsgContent from MsgInterface
  */
 class MsgTest extends TestCase
 {
@@ -33,6 +35,11 @@ class MsgTest extends TestCase
     protected array $parameters;
 
     /**
+     * @var MsgContent
+     */
+    protected array $msgContent;
+
+    /**
      * @var string
      */
     protected string $domain;
@@ -43,6 +50,9 @@ class MsgTest extends TestCase
         $param1 = 'pvc is a great set of libraries.';
         $param2 = new DateTime('2002/12/13');
         $this->parameters = ['pvc_great' => $param1, 'date' => $param2];
+        $this->msgContent = ['msgId'      => $this->msgId,
+                             'parameters' => $this->parameters
+        ];
         $this->domain = 'userMessages';
         $this->msg = new Msg();
     }
@@ -54,7 +64,7 @@ class MsgTest extends TestCase
      */
     public function testSetGetMsgId(): void
     {
-        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgContent);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
     }
 
@@ -65,7 +75,7 @@ class MsgTest extends TestCase
      */
     public function testSetGetParameters(): void
     {
-        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgContent);
         self::assertEquals($this->parameters, $this->msg->getParameters());
     }
 
@@ -76,7 +86,7 @@ class MsgTest extends TestCase
      */
     public function testSetGetDomain(): void
     {
-        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgContent);
         self::assertEquals($this->domain, $this->msg->getDomain());
     }
 
@@ -86,7 +96,7 @@ class MsgTest extends TestCase
      */
     public function testSetMsgContent(): void
     {
-        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgContent);
         self::assertEquals($this->msgId, $this->msg->getMsgId());
         self::assertEquals($this->parameters, $this->msg->getParameters());
         self::assertEquals($this->domain, $this->msg->getDomain());
@@ -102,7 +112,7 @@ class MsgTest extends TestCase
     {
         self::assertFalse($this->msg->contentIsSet());
 
-        $this->msg->setContent($this->domain, $this->msgId, $this->parameters);
+        $this->msg->setContent($this->domain, $this->msgContent);
         self::assertTrue($this->msg->contentIsSet());
 
         $this->msg->clearContent();
