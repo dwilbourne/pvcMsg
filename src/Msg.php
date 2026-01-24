@@ -12,7 +12,6 @@ use pvc\interfaces\msg\MsgInterface;
 
 /**
  * Class Msg
- * @phpstan-import-type MsgContent from MsgInterface
  */
 class Msg implements MsgInterface
 {
@@ -61,13 +60,18 @@ class Msg implements MsgInterface
 
     /**
      * @param non-empty-string $domain
-     * @param  MsgContent  $msgContent
+     * @param  non-empty-string  $msgId
+     * @param  mixed[]  $parameters
      */
-    public function setContent(string $domain, array $msgContent): void
+    public function setContent(
+        string $domain,
+        string $msgId,
+        array $parameters = []
+    ): void
     {
         $this->domain = $domain;
-        $this->msgId = $msgContent['msgId'];
-        $this->parameters = $msgContent['parameters'];
+        $this->msgId = $msgId;
+        $this->parameters = $parameters;
     }
 
     /**
