@@ -9,15 +9,15 @@ declare(strict_types=1);
 namespace pvcTests\msg;
 
 use PHPUnit\Framework\TestCase;
-use pvc\msg\DomainCatalogFileLoaderPHP;
+use pvc\msg\DomainCatalogFileLoaderPhp;
 use pvc\msg\err\InvalidDomainCatalogFileException;
 
 class DomainCatalogFileLoaderPHPTest extends TestCase
 {
     /**
-     * @var DomainCatalogFileLoaderPHP
+     * @var DomainCatalogFileLoaderPhp
      */
-    protected DomainCatalogFileLoaderPHP $loader;
+    protected DomainCatalogFileLoaderPhp $loader;
 
     /**
      * @var string
@@ -74,8 +74,7 @@ class DomainCatalogFileLoaderPHPTest extends TestCase
     {
         self::expectException(InvalidDomainCatalogFileException::class);
         $filePath = $this->loader->getCatalogFilePathFromDomainLocale($domain, $this->locale);
-        $foo = $this->loader->parseDomainCatalogFile($filePath);
-        unset($foo);
+        $this->loader->parseDomainCatalogFile($filePath);
     }
 
     /**
@@ -86,6 +85,7 @@ class DomainCatalogFileLoaderPHPTest extends TestCase
     public function testGoodMessages(): void
     {
         $fixture = $this->fixtureDir . 'messages.en.php';
-        self::assertIsArray($this->loader->parseDomainCatalogFile($fixture));
+        $messages = $this->loader->parseDomainCatalogFile($fixture);
+        self::assertNotEmpty($messages);
     }
 }

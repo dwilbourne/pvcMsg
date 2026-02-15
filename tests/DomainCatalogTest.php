@@ -20,7 +20,7 @@ class DomainCatalogTest extends TestCase
      */
     protected DomainCatalog $catalog;
 
-    protected DomainCatalogLoaderInterface|MockObject $loader;
+    protected DomainCatalogLoaderInterface&MockObject $loader;
 
     /**
      * @var string
@@ -28,12 +28,12 @@ class DomainCatalogTest extends TestCase
     protected string $mockDomainCatalogFileName;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     protected string $testDomain;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     protected string $testLocale;
 
@@ -107,7 +107,6 @@ class DomainCatalogTest extends TestCase
 
     /**
      * loadCatalogWithConfiguredMocks
-     * @throws \pvc\msg\err\InvalidDomainException
      */
     protected function loadCatalogWithConfiguredMocks(): void
     {

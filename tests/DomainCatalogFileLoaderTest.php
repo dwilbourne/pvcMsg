@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace pvcTests\msg;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use pvc\msg\DomainCatalogFileLoader;
 use pvc\msg\err\NonExistentDomainCatalogDirectoryException;
@@ -15,33 +16,18 @@ use pvc\msg\err\NonExistentDomainCatalogFileException;
 
 class DomainCatalogFileLoaderTest extends TestCase
 {
-    /**
-     * @var DomainCatalogFileLoader
-     */
-    protected DomainCatalogFileLoader $fileLoader;
+    protected DomainCatalogFileLoader&MockObject $fileLoader;
 
-    /**
-     * @var string
-     */
     protected string $fixturePath;
 
-    /**
-     * @var string
-     */
     protected string $fixtureFile;
 
-    /**
-     * @var string
-     */
     protected string $domain;
 
-    /**
-     * @var string
-     */
     protected string $locale;
 
     /**
-     * @var array|string[]
+     * @var array<string>
      */
     protected array $messages;
 
@@ -115,6 +101,11 @@ class DomainCatalogFileLoaderTest extends TestCase
         );
     }
 
+    /**
+     * domainLocaleDataProvider
+     *
+     * @return array<array<string>>
+     */
     public function domainLocaleDataProvider(): array
     {
         return [

@@ -23,17 +23,17 @@ class MsgTest extends TestCase
     protected Msg $msg;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     protected string $msgId;
 
     /**
-     * @var mixed[]
+     * @var array<mixed>
      */
     protected array $parameters;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     protected string $domain;
 
