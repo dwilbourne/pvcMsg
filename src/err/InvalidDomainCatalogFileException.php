@@ -16,7 +16,7 @@ use Throwable;
  */
 class InvalidDomainCatalogFileException extends LogicException
 {
-    public function __construct(Throwable $prev = null)
+    public function __construct(?Throwable $prev = null)
     {
         parent::__construct($prev);
     }

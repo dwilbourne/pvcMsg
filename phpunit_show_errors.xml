@@ -3,7 +3,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         colors="true"
         bootstrap="vendor/autoload.php"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd">
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+        displayDetailsOnAllIssues="true">
 
     <source>
         <include>
@@ -16,4 +17,5 @@
             <directory>tests*</directory>
         </testsuite>
     </testsuites>
+
 </phpunit>

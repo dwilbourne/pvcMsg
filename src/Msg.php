@@ -34,17 +34,11 @@ class Msg implements MsgInterface
      */
     protected array $parameters;
 
-    /**
-     * @return string
-     */
     public function getMsgId(): string
     {
         return $this->msgId;
     }
 
-    /**
-     * @return string
-     */
     public function getDomain(): string
     {
         return $this->domain;
@@ -86,7 +80,6 @@ class Msg implements MsgInterface
 
     /**
      * contentIsSet
-     * @return bool
      */
     public function contentIsSet(): bool
     {

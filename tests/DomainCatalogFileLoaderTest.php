@@ -106,7 +106,7 @@ class DomainCatalogFileLoaderTest extends TestCase
      *
      * @return array<array<string>>
      */
-    public function domainLocaleDataProvider(): array
+    public static function domainLocaleDataProvider(): array
     {
         return [
             ['messages', 'en_US', 'messages.en_US.php', 'failed to process en_US correctly'],

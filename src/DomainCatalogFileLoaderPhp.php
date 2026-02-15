@@ -17,7 +17,6 @@ class DomainCatalogFileLoaderPhp extends DomainCatalogFileLoader
 {
     /**
      * getFileType
-     * @return string
      */
     public function getFileType(): string
     {
@@ -25,7 +24,6 @@ class DomainCatalogFileLoaderPhp extends DomainCatalogFileLoader
     }
 
     /**
-     * @param string $filepath
      * @return array<string, string>
      * @throws InvalidDomainCatalogFileException
      */

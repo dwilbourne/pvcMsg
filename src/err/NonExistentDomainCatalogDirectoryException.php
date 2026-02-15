@@ -16,7 +16,7 @@ use Throwable;
  */
 class NonExistentDomainCatalogDirectoryException extends LogicException
 {
-    public function __construct(string $dirname, Throwable $prev = null)
+    public function __construct(string $dirname, ?Throwable $prev = null)
     {
         parent::__construct($dirname, $prev);
     }

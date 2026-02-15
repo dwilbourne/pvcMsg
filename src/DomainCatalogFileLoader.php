@@ -18,14 +18,10 @@ use pvc\msg\err\NonExistentDomainCatalogFileException;
  */
 abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
 {
-    /**
-     * @var string
-     */
     protected string $domainCatalogDirectory;
 
     /**
      * setDomainCatalogDirectory
-     * @param string $dirname
      * @throws NonExistentDomainCatalogDirectoryException
      */
     public function setDomainCatalogDirectory(string $dirname): void
@@ -36,9 +32,6 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
         $this->domainCatalogDirectory = $dirname;
     }
 
-    /**
-     * @return string
-     */
     public function getDomainCatalogDirectory(): string
     {
         return $this->domainCatalogDirectory;
@@ -46,7 +39,6 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
 
     /**
      * getPossibleFilenamePartsFromLocale
-     * @param string $locale
      * @return array<string>
      */
     protected function getPossibleFilenamePartsFromLocale(string $locale): array
@@ -82,9 +74,6 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
 
     /**
      * getCatalogFilePathFromDomainLocale
-     * @param string $domain
-     * @param string $locale
-     * @return string
      */
     public function getCatalogFilePathFromDomainLocale(string $domain, string $locale = ''): string
     {
@@ -113,8 +102,6 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
 
     /**
      * loadCatalog
-     * @param string $domain
-     * @param string $locale
      * @return string[]
      * @throws NonExistentDomainCatalogFileException
      */

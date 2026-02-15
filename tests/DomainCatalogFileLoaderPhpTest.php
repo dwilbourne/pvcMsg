@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use pvc\msg\DomainCatalogFileLoaderPhp;
 use pvc\msg\err\InvalidDomainCatalogFileException;
 
-class DomainCatalogFileLoaderPHPTest extends TestCase
+class DomainCatalogFileLoaderPhpTest extends TestCase
 {
     /**
      * @var DomainCatalogFileLoaderPhp
@@ -53,7 +53,7 @@ class DomainCatalogFileLoaderPHPTest extends TestCase
      * getBadMessageTestFixtures
      * @return array<int, array<int, string>>
      */
-    public function getBadMessageTestFixtures(): array
+    public static function getBadMessageTestFixtures(): array
     {
         return [
             ['badMessages_1'],
