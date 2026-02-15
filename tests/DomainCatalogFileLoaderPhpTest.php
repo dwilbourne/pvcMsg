@@ -11,22 +11,17 @@ namespace pvcTests\msg;
 use PHPUnit\Framework\TestCase;
 use pvc\msg\DomainCatalogFileLoaderPhp;
 use pvc\msg\err\InvalidDomainCatalogFileException;
+use pvc\msg\err\NonExistentDomainCatalogDirectoryException;
+use pvc\msg\err\NonExistentDomainCatalogFileException;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(\pvc\msg\DomainCatalogFileLoader::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\pvc\msg\DomainCatalogFileLoaderPhp::class)]
 class DomainCatalogFileLoaderPhpTest extends TestCase
 {
-    /**
-     * @var DomainCatalogFileLoaderPhp
-     */
     protected DomainCatalogFileLoaderPhp $loader;
 
-    /**
-     * @var string
-     */
     protected string $fixtureDir;
 
-    /**
-     * @var string
-     */
     protected string $locale;
 
     /**
@@ -42,7 +37,6 @@ class DomainCatalogFileLoaderPhpTest extends TestCase
 
     /**
      * testGetFileType
-     * @covers \pvc\msg\DomainCatalogFileLoaderPHP::getFileType
      */
     public function testGetFileType(): void
     {
@@ -64,12 +58,23 @@ class DomainCatalogFileLoaderPhpTest extends TestCase
     }
 
     /**
-     * testBadFiles
-     * @param string $domain
-     * @throws InvalidDomainCatalogFileException
-     * @dataProvider getBadMessageTestFixtures
-     * @covers \pvc\msg\DomainCatalogFileLoaderPHP::parseDomainCatalogFile
+     * testSetDomainCatalogDirectoryThrowsExceptionOnNonExistentDirectory
      */
+    public function testSetDomainCatalogDirectoryThrowsExceptionOnNonExistentDirectory(
+    ): void
+    {
+        $badPath = '/noSuchDirectory';
+        self::expectException(
+            NonExistentDomainCatalogDirectoryException::class
+        );
+        $this->loader->setDomainCatalogDirectory($badPath);
+    }
+
+    /**
+     * testBadFiles
+     * @throws InvalidDomainCatalogFileException
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getBadMessageTestFixtures')]
     public function testBadFiles(string $domain): void
     {
         self::expectException(InvalidDomainCatalogFileException::class);
@@ -77,15 +82,39 @@ class DomainCatalogFileLoaderPhpTest extends TestCase
         $this->loader->parseDomainCatalogFile($filePath);
     }
 
+    public function testLoadCatalogFailsIfFilenameDoesNotExist(): void
+    {
+        /**
+         * 'phrases' domain does not exist, i.e. there is no phrases.en.php file in the directory
+         */
+        $badDomain = 'phrases';
+        self::expectException(NonExistentDomainCatalogFileException::class);
+        $this->loader->loadCatalog($badDomain, $this->locale);
+    }
+
+    public function testLoadCatalogDegradesToEnglishIfThereIsNoCatalogForTheSpecifiedLocale(
+    ): void
+    {
+        $domain = 'messages';
+        $locale = 'fr';
+        $messages = $this->loader->loadCatalog($domain, $locale);
+        $msgId = 'symfony_great';
+        /**
+         * english
+         */
+        $expectedMessage = 'Symfony is GREAT!';
+        self::assertEquals($expectedMessage, $messages[$msgId]);
+    }
+
     /**
      * testGoodMessages
      * @throws InvalidDomainCatalogFileException
-     * @covers \pvc\msg\DomainCatalogFileLoaderPHP::parseDomainCatalogFile
      */
     public function testGoodMessages(): void
     {
-        $fixture = $this->fixtureDir . 'messages.en.php';
-        $messages = $this->loader->parseDomainCatalogFile($fixture);
+        $domain = 'messages';
+        $locale = 'en';
+        $messages = $this->loader->loadCatalog($domain, $locale);
         self::assertNotEmpty($messages);
     }
 }

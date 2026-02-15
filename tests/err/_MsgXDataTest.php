@@ -14,15 +14,15 @@ use pvc\msg\err\_MsgXData;
 /**
  * Class _MsgXDataTest
  */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\err\_MsgXData::class, 'getLocalXCodes')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\err\_MsgXData::class, 'getXMessageTemplates')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\err\InvalidDomainCatalogFileException::class, '__construct')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\err\NonExistentDomainCatalogDirectoryException::class, '__construct')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\err\NonExistentDomainCatalogFileException::class, '__construct')]
 class _MsgXDataTest extends XDataTestMaster
 {
     /**
      * testLibrary
-     * @covers \pvc\msg\err\_MsgXData::getLocalXCodes
-     * @covers \pvc\msg\err\_MsgXData::getXMessageTemplates
-     * @covers \pvc\msg\err\InvalidDomainCatalogFileException::__construct
-     * @covers \pvc\msg\err\NonExistentDomainCatalogDirectoryException::__construct
-     * @covers \pvc\msg\err\NonExistentDomainCatalogFileException::__construct
      */
     public function testLibrary(): void
     {

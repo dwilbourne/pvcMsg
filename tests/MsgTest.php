@@ -15,11 +15,14 @@ use pvc\msg\Msg;
 /**
  * Class MsgTest
  */
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\Msg::class, 'setContent')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\Msg::class, 'getMsgId')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\Msg::class, 'getParameters')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\Msg::class, 'getDomain')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\Msg::class, 'clearContent')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\Msg::class, 'contentIsSet')]
 class MsgTest extends TestCase
 {
-    /**
-     * @var Msg
-     */
     protected Msg $msg;
 
     /**
@@ -49,8 +52,6 @@ class MsgTest extends TestCase
 
     /**
      * testSetGetMsgId
-     * @covers \pvc\msg\Msg::setContent
-     * @covers \pvc\msg\Msg::getMsgId
      */
     public function testSetGetMsgId(): void
     {
@@ -60,8 +61,6 @@ class MsgTest extends TestCase
 
     /**
      * testSetGetParameters
-     * @covers \pvc\msg\Msg::setContent
-     * @covers \pvc\msg\Msg::getParameters
      */
     public function testSetGetParameters(): void
     {
@@ -71,8 +70,6 @@ class MsgTest extends TestCase
 
     /**
      * testSetGetDomain
-     * @covers \pvc\msg\Msg::setContent
-     * @covers \pvc\msg\Msg::getDomain
      */
     public function testSetGetDomain(): void
     {
@@ -82,7 +79,6 @@ class MsgTest extends TestCase
 
     /**
      * testSetMsgContent
-     * @covers \pvc\msg\Msg::setContent
      */
     public function testSetMsgContent(): void
     {
@@ -95,8 +91,6 @@ class MsgTest extends TestCase
 
     /**
      * testClear
-     * @covers \pvc\msg\Msg::clearContent
-     * @covers \pvc\msg\Msg::contentIsSet
      */
     public function testClearContent(): void
     {

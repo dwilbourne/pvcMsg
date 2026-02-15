@@ -19,20 +19,20 @@ class Msg implements MsgInterface
      * @var string
      * this is the id that will be used to retrieve the full message from the domain catalog
      */
-    protected string $msgId;
+    protected string $msgId = '';
 
     /**
      * @var string
      * the MsgFrmtr will use this to make sure the correct catalog is loaded (or load the correct
      * one) before attempting to retrieve the message text
      */
-    protected string $domain;
+    protected string $domain = '';
 
     /**
      * @var array<mixed>
      * parameters used to fill any placeholders in the message text
      */
-    protected array $parameters;
+    protected array $parameters = [];
 
     public function getMsgId(): string
     {
@@ -49,7 +49,7 @@ class Msg implements MsgInterface
      */
     public function getParameters(): array
     {
-        return $this->parameters ?? [];
+        return $this->parameters;
     }
 
     /**
@@ -73,9 +73,9 @@ class Msg implements MsgInterface
      */
     public function clearContent(): void
     {
-        unset($this->domain);
-        unset($this->msgId);
-        unset($this->parameters);
+        $this->domain = '';
+        $this->msgId = '';
+        $this->parameters = [];
     }
 
     /**
@@ -83,6 +83,6 @@ class Msg implements MsgInterface
      */
     public function contentIsSet(): bool
     {
-        return isset($this->msgId);
+        return !empty($this->msgId);
     }
 }

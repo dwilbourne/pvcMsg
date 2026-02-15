@@ -13,18 +13,19 @@ use PHPUnit\Framework\TestCase;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
 use pvc\msg\DomainCatalog;
 
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, '__construct')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getDomain')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getLocale')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getMessages')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'isLoaded')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'load')]
+#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getMessage')]
 class DomainCatalogTest extends TestCase
 {
-    /**
-     * @var DomainCatalog
-     */
     protected DomainCatalog $catalog;
 
     protected DomainCatalogLoaderInterface&MockObject $loader;
 
-    /**
-     * @var string
-     */
     protected string $mockDomainCatalogFileName;
 
     /**
@@ -37,24 +38,12 @@ class DomainCatalogTest extends TestCase
      */
     protected string $testLocale;
 
-    /**
-     * @var string
-     */
     protected string $msgOne;
 
-    /**
-     * @var string
-     */
     protected string $msgOneIndex;
 
-    /**
-     * @var string
-     */
     protected string $msgTwo;
 
-    /**
-     * @var string
-     */
     protected string $msgTwoIndex;
 
     /**
@@ -83,10 +72,6 @@ class DomainCatalogTest extends TestCase
         ];
     }
 
-    /**
-     * @return void
-     * @covers \pvc\msg\DomainCatalog::__construct
-     */
     public function testConstruct(): void
     {
         self::assertInstanceOf(DomainCatalog::class, $this->catalog);
@@ -94,9 +79,6 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testDomainCatalogDomainLocaleAndMessagesEmptyAtInitialization
-     * @covers \pvc\msg\DomainCatalog::getDomain
-     * @covers \pvc\msg\DomainCatalog::getLocale
-     * @covers \pvc\msg\DomainCatalog::getMessages
      */
     public function testDomainCatalogDomainLocaleAndMessagesEmptyAtInitialization(): void
     {
@@ -120,11 +102,6 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testLoaderLoadMethodSetsDomainLocaleAndMessagesUponSuccess
-     * @covers \pvc\msg\DomainCatalog::isLoaded
-     * @covers \pvc\msg\DomainCatalog::load
-     * @covers \pvc\msg\DomainCatalog::getDomain
-     * @covers \pvc\msg\DomainCatalog::getLocale
-     * @covers \pvc\msg\DomainCatalog::getMessages
      */
     public function testLoaderLoadMethodSetsDomainLocaleAndMessagesUponSuccess(): void
     {
@@ -136,8 +113,6 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testLoaderDoesNotReloadMessagesThatAreAlreadyLoaded
-     * @covers \pvc\msg\DomainCatalog::isLoaded
-     * @covers \pvc\msg\DomainCatalog::load
      */
     public function testLoaderDoesNotReloadMessagesThatAreAlreadyLoaded(): void
     {
@@ -148,7 +123,6 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testGetMessageReturnsIdIfDoesNotExistInCatalog
-     * @covers \pvc\msg\DomainCatalog::getMessage
      */
     public function testGetMessageReturnsNullIfItDoesNotExistInCatalog(): void
     {
@@ -159,7 +133,6 @@ class DomainCatalogTest extends TestCase
 
     /**
      * testGetMessage
-     * @covers \pvc\msg\DomainCatalog::getMessage
      */
     public function testGetMessage(): void
     {

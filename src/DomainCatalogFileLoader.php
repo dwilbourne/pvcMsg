@@ -32,11 +32,6 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
         $this->domainCatalogDirectory = $dirname;
     }
 
-    public function getDomainCatalogDirectory(): string
-    {
-        return $this->domainCatalogDirectory;
-    }
-
     /**
      * getPossibleFilenamePartsFromLocale
      * @return array<string>
@@ -89,7 +84,8 @@ abstract class DomainCatalogFileLoader implements DomainCatalogLoaderInterface
          */
         foreach ($possibleFilenameParts as $filenamePart) {
             $filename = $domain . '.' . $filenamePart . '.' . $this->getFileType();
-            $filepath = $this->getDomainCatalogDirectory() . DIRECTORY_SEPARATOR . $filename;
+            $filepath = $this->domainCatalogDirectory.DIRECTORY_SEPARATOR
+                .$filename;
             if (file_exists($filepath)) {
                 return $filepath;
             }
