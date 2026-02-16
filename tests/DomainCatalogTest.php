@@ -8,18 +8,15 @@ declare(strict_types=1);
 
 namespace pvcTests\msg;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use pvc\interfaces\msg\DomainCatalogLoaderInterface;
 use pvc\msg\DomainCatalog;
 
-#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, '__construct')]
-#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getDomain')]
-#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getLocale')]
-#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getMessages')]
-#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'isLoaded')]
-#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'load')]
-#[\PHPUnit\Framework\Attributes\CoversMethod(\pvc\msg\DomainCatalog::class, 'getMessage')]
+#[CoversClass(DomainCatalog::class)]
+#[AllowMockObjectsWithoutExpectations]
 class DomainCatalogTest extends TestCase
 {
     protected DomainCatalog $catalog;
